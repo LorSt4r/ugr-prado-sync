@@ -56,11 +56,13 @@ class MfaResolver:
         interactive: bool = True,
         json_mode: bool = False,
         agent_code: Optional[str] = None,
+        gui_mode: bool = False,
     ) -> None:
         self.config = mfa_config or MfaConfig()
         self.interactive = interactive
         self.json_mode = json_mode
         self.agent_code = agent_code
+        self.gui_mode = gui_mode
 
     def resolve_code(
         self,
@@ -111,7 +113,20 @@ class MfaResolver:
             if code:
                 return code
 
-        # Tier 3: Interactive Prompt or Non-interactive Agent Protocol
+        # Tier 3: GUI Dialog, Interactive TTY Prompt, or Non-interactive Agent Protocol
+        if self.gui_mode:
+            from prado.auth.credentials import prompt_gui_input
+
+            gui_code = prompt_gui_input(
+                prompt="Enter the 6-digit verification code sent to your institutional email (@correo.ugr.es):",
+                title="PradoOS — Two-Factor Verification (MFA)",
+                hidden=False,
+            )
+            if gui_code:
+                m_gui = re.search(r"\b([0-9]{6})\b", gui_code.strip())
+                if m_gui:
+                    return m_gui.group(1)
+
         is_tty = hasattr(sys.stdin, "isatty") and sys.stdin.isatty()
         if not self.interactive or self.json_mode or not is_tty:
             raise MfaRequiredError(

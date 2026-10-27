@@ -9,14 +9,19 @@ Use this skill whenever the user asks to install, configure, troubleshoot, or ru
 
 ## Core Capabilities & Workflow
 
-1. **Always Use `--json` When Calling `prado` From an Agent:**
+1. **Always Use `./install.sh` & `--json` When Calling `prado` From an Agent:**
    ```bash
-   prado doctor --json
-   prado auth status --json
-   prado discover --json
-   prado sync --dry-run --json
-   prado sync --adopt --json
+   ./install.sh
+   .venv/bin/prado doctor --json
+   .venv/bin/prado auth login --gui --json
+   .venv/bin/prado discover --json
+   .venv/bin/prado sync --dry-run --json
+   .venv/bin/prado sync --adopt --json
    ```
+
+2. **Zero-Terminal Native OS GUI Login (`prado auth login --gui --json`):**
+   - Never ask the user to open a separate terminal or paste their password in chat.
+   - Run `.venv/bin/prado auth login --gui --json` directly: it opens a native OS dialog (`osascript` on macOS, `PromptForCredential` on Windows, `zenity`/`kdialog` on Linux) where the user enters their email, password (stored directly in OS Keychain), and 6-digit MFA code.
 
 2. **Respect the Exit Code Contract:**
    - `0`: Command succeeded; parse JSON from `stdout`.

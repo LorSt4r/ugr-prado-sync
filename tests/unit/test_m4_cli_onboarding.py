@@ -112,3 +112,16 @@ class TestOnboardingAndStarUnit:
         out_doc = json.loads(capsys.readouterr().out)
         assert code_doc in (0, 1)
         assert len(out_doc["probes"]) == 9
+
+    def test_cli_auth_login_gui_mode(
+        self, mock_config_dir, mock_courses_dir, in_memory_keyring, monkeypatch, capsys
+    ):
+        prompts = iter(["gui_student@correo.ugr.es", "gui_secret_pass"])
+        monkeypatch.setattr("prado.cli.prompt_gui_input", lambda **kw: next(prompts))
+        monkeypatch.setattr("prado.auth.saml.UgrSamlDriver.login", lambda self, username, password: None)
+
+        code = main(["auth", "login", "--gui", "--json"])
+        out = json.loads(capsys.readouterr().out)
+        assert code == 0
+        assert out["status"] == "success"
+        assert out["username"] == "gui_student@correo.ugr.es"

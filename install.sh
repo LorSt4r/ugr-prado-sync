@@ -13,16 +13,19 @@ BIN_DIR="${PRADO_BIN_DIR:-$HOME/.local/bin}"
 
 printf "\033[1;34m==> PradoOS Installer (macOS / Linux Desktop)\033[0m\n"
 
-# 1. Verify Python >= 3.10
-if ! command -v python3 >/dev/null 2>&1; then
-    printf "\033[1;31mError: python3 is not installed. Please install Python 3.10 or newer.\033[0m\n" >&2
-    exit 1
-fi
+# 1. Locate Python >= 3.10 (or uv)
+PYTHON_BIN=""
+for candidate in python3.14 python3.13 python3.12 python3.11 python3.10 /opt/homebrew/bin/python3 /usr/local/bin/python3 python3; do
+    if command -v "$candidate" >/dev/null 2>&1; then
+        if "$candidate" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)' 2>/dev/null; then
+            PYTHON_BIN="$candidate"
+            break
+        fi
+    fi
+done
 
-PY_OK=$(python3 -c 'import sys; print(int(sys.version_info >= (3, 10)))')
-if [ "$PY_OK" != "1" ]; then
-    PY_VER=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-    printf "\033[1;31mError: Python >= 3.10 is required (found Python %s).\033[0m\n" "$PY_VER" >&2
+if [ -z "$PYTHON_BIN" ] && ! command -v uv >/dev/null 2>&1; then
+    printf "\033[1;31mError: Python >= 3.10 is required (macOS system /usr/bin/python3 is 3.9). Install Python 3.10+ via Homebrew ('brew install python') or uv ('curl -LsSf https://astral.sh/uv/install.sh | sh').\033[0m\n" >&2
     exit 1
 fi
 
@@ -50,9 +53,15 @@ fi
 # 3. Create isolated virtual environment & install package
 VENV_DIR="$SRC_DIR/.venv"
 printf "==> Creating Python virtual environment at %s\n" "$VENV_DIR"
-python3 -m venv "$VENV_DIR"
-"$VENV_DIR/bin/pip" install --upgrade pip >/dev/null
-"$VENV_DIR/bin/pip" install -e "$SRC_DIR"
+if [ -n "$PYTHON_BIN" ]; then
+    "$PYTHON_BIN" -m venv "$VENV_DIR"
+    "$VENV_DIR/bin/pip" install --upgrade pip setuptools wheel >/dev/null
+    "$VENV_DIR/bin/pip" install -e "$SRC_DIR"
+else
+    uv venv "$VENV_DIR" --python ">=3.10" --seed
+    "$VENV_DIR/bin/pip" install --upgrade pip setuptools wheel >/dev/null
+    "$VENV_DIR/bin/pip" install -e "$SRC_DIR"
+fi
 
 # 4. Symlink `prado` binary into ~/.local/bin
 mkdir -p "$BIN_DIR"

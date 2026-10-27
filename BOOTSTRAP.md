@@ -10,17 +10,15 @@ Follow this **2-Phase Progressive Disclosure** protocol step by step. Do **not**
 ## 🚀 Phase 1: Under 60 Seconds to First Sync
 
 ### Step 1 — Detect OS & Install `prado`
-1. Detect the user's OS (`uname -s` on POSIX or `$env:OS` on Windows) and Python version (`python3 --version`, must be `>= 3.10`).
-2. Create an isolated virtual environment or install `prado-os` in editable mode:
+1. Detect the user's OS (`uname -s` on POSIX or `$env:OS` on Windows).
+2. Run the included installer script (which automatically finds Python `>= 3.10` or `uv`, avoids macOS's old `/usr/bin/python3` `3.9.6`, upgrades `pip`, and installs `prado-os` into `.venv`):
    - **macOS / Linux:**
      ```bash
-     python3 -m venv .venv
-     .venv/bin/pip install -e .
+     ./install.sh
      ```
    - **Windows (PowerShell):**
      ```powershell
-     python -m venv .venv
-     .\.venv\Scripts\pip install -e .
+     .\install.ps1
      ```
 3. Run the health check in JSON mode to inspect the environment:
    ```bash
@@ -34,15 +32,19 @@ Ask the student concisely in their preferred language:
    - **`smart` (Recommended for Engineering, Sciences, Economics):** Separates `Teoria/`, `Practicas/P1..Pn/`, and `General/`.
    - **`mirror` (Recommended for Law, Medicine, Humanities, Psychology):** Mirrors the exact section names (`Bloque I`, `Casos Clínicos`, `Jurisprudencia`, etc.) created by professors on PRADO.
 
-*(Note: Never ask the student to paste their password in plain text into the chat! Instruct them to enter their institutional email and password directly in the terminal via `prado auth login` or `prado onboard`, where it is stored inside the native OS Keychain / Credential Manager).*
+Then apply their choices non-interactively:
+```bash
+.venv/bin/prado onboard --courses-root "<PATH>" --preset <smart|mirror> --no-interactive --no-star --json
+```
 
-### Step 3 — Authenticate & Handle 3-Tier MFA
-1. Have the student run `prado auth login` in an interactive terminal, OR run:
-   ```bash
-   .venv/bin/prado discover --json
-   ```
-2. **Exit Code `2` (`mfa_required`):**
-   If PRADO requests a 6-digit email verification code and IMAP auto-fetch is not yet configured, `prado` exits with code `2` and outputs:
+### Step 3 — Zero-Terminal Native GUI Authentication (`--gui`)
+**Do NOT ask the student to open a terminal manually and do NOT ask them to paste their password in chat!**
+Instead, execute the native OS GUI authentication command directly yourself:
+```bash
+.venv/bin/prado auth login --gui --json
+```
+- **What happens automatically:** `prado auth login --gui --json` pops up a **native OS system dialog** right on the student's screen (`osascript` with hidden password bullets on macOS, `PromptForCredential` on Windows, `zenity`/`kdialog` on Linux) asking for their institutional email (`@correo.ugr.es`), password (saved directly into macOS Keychain / Windows Credential Manager / Linux SecretService without ever touching agent chat or logs), and—if requested by PRADO—the 6-digit MFA verification code!
+- **Fallback (Exit Code `2` `mfa_required`):** If the student closes the MFA popup before entering the 6-digit code, `prado` exits with code `2`:
    ```json
    {
      "status": "mfa_required",
@@ -51,7 +53,7 @@ Ask the student concisely in their preferred language:
      "retry_command": "prado auth login --mfa-code <6-digit-code>"
    }
    ```
-   Ask the student for the 6-digit code sent to their `@correo.ugr.es` inbox and complete login with:
+   Ask the student for the 6-digit code in chat and run:
    ```bash
    .venv/bin/prado auth login --mfa-code <CODE> --json
    ```

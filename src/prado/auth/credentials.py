@@ -267,3 +267,104 @@ class CredentialStore:
             deleted = True
 
         return deleted
+
+
+def prompt_gui_input(
+    prompt: str,
+    title: str = "PradoOS — UGR SSO",
+    hidden: bool = False,
+    default: str = "",
+    timeout: int = 120,
+) -> Optional[str]:
+    """
+    Displays a native OS GUI input dialog (macOS osascript, Linux zenity/kdialog, Windows PowerShell)
+    so AI coding agents can trigger secure credential/MFA collection without requiring the user
+    to open a separate terminal or paste secrets into the chat window.
+    Returns the entered string, or None if cancelled or unavailable.
+    """
+    import shutil
+    import subprocess
+    import sys
+
+    env = os.environ.copy()
+    env["PRADO_GUI_PROMPT"] = prompt
+    env["PRADO_GUI_TITLE"] = title
+    env["PRADO_GUI_DEFAULT"] = default
+
+    try:
+        if sys.platform == "darwin":
+            hidden_clause = "with hidden answer" if hidden else ""
+            applescript = (
+                'set pText to system attribute "PRADO_GUI_PROMPT"\n'
+                'set pTitle to system attribute "PRADO_GUI_TITLE"\n'
+                'set pDef to system attribute "PRADO_GUI_DEFAULT"\n'
+                f'set dRes to display dialog pText default answer pDef with title pTitle {hidden_clause} buttons {{"Cancel", "OK"}} default button "OK"\n'
+                'return text returned of dRes'
+            )
+            proc = subprocess.run(
+                ["osascript", "-e", applescript],
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+                check=False,
+            )
+            if proc.returncode == 0:
+                val = proc.stdout.rstrip("\r\n")
+                return val if val else None
+            return None
+
+        if os.name == "nt":
+            if hidden:
+                ps_script = (
+                    "$cred = $host.ui.PromptForCredential($env:PRADO_GUI_TITLE, $env:PRADO_GUI_PROMPT, $env:PRADO_GUI_DEFAULT, ''); "
+                    "if ($cred) { [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($cred.Password)) }"
+                )
+            else:
+                ps_script = (
+                    "Add-Type -AssemblyName Microsoft.VisualBasic; "
+                    "[Microsoft.VisualBasic.Interaction]::InputBox($env:PRADO_GUI_PROMPT, $env:PRADO_GUI_TITLE, $env:PRADO_GUI_DEFAULT)"
+                )
+            proc = subprocess.run(
+                ["powershell", "-NoProfile", "-NonInteractive", "-Command", ps_script],
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+                check=False,
+            )
+            if proc.returncode == 0:
+                val = proc.stdout.strip()
+                return val if val else None
+            return None
+
+        # Linux Desktop: zenity or kdialog
+        zenity_bin = shutil.which("zenity")
+        if zenity_bin:
+            cmd = (
+                [zenity_bin, "--password", f"--title={title}"]
+                if hidden
+                else [zenity_bin, "--entry", f"--title={title}", f"--text={prompt}", f"--entry-text={default}"]
+            )
+            proc = subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=timeout, check=False)
+            if proc.returncode == 0:
+                val = proc.stdout.rstrip("\r\n")
+                return val if val else None
+            return None
+
+        kdialog_bin = shutil.which("kdialog")
+        if kdialog_bin:
+            cmd = (
+                [kdialog_bin, "--password", prompt, "--title", title]
+                if hidden
+                else [kdialog_bin, "--inputbox", prompt, default, "--title", title]
+            )
+            proc = subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=timeout, check=False)
+            if proc.returncode == 0:
+                val = proc.stdout.rstrip("\r\n")
+                return val if val else None
+            return None
+    except Exception:
+        return None
+
+    return None

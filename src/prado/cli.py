@@ -31,7 +31,7 @@ from typing import Any, Dict, List, Optional, Sequence
 import requests
 
 from prado import __version__
-from prado.auth.credentials import CredentialStore
+from prado.auth.credentials import CredentialStore, prompt_gui_input
 from prado.auth.mfa import MfaResolver
 from prado.auth.saml import UgrSamlDriver
 from prado.auth.session import MoodleSessionManager
@@ -207,6 +207,7 @@ def _handle_auth(args: argparse.Namespace, json_mode: bool) -> int:
         return 0
 
     # action == "login"
+    gui_mode = bool(getattr(args, "gui", False))
     username = args.username or cfg.username
     password = args.password
     if not password and username:
@@ -217,16 +218,28 @@ def _handle_auth(args: argparse.Namespace, json_mode: bool) -> int:
             pass
 
     if not username:
-        if not json_mode and not args.no_interactive and sys.stdin.isatty():
+        if gui_mode:
+            username = prompt_gui_input(
+                prompt="Enter your institutional UGR email (@correo.ugr.es):",
+                title="PradoOS — UGR SSO Login",
+                hidden=False,
+            )
+        elif not json_mode and not args.no_interactive and sys.stdin.isatty():
             username = input("Institutional Username / Email: ").strip()
-        else:
+        if not username:
             raise InvalidCredentialsError("Username is required for 'prado auth login'.")
 
     if not password:
-        if not json_mode and not args.no_interactive and sys.stdin.isatty():
+        if gui_mode:
+            password = prompt_gui_input(
+                prompt=f"Enter password for {username} (saved securely in native OS Keychain):",
+                title="PradoOS — UGR SSO Login",
+                hidden=True,
+            )
+        elif not json_mode and not args.no_interactive and sys.stdin.isatty():
             import getpass
             password = getpass.getpass("Institutional Password: ")
-        else:
+        if not password:
             raise InvalidCredentialsError("Password is required for 'prado auth login'.")
 
     cred_store.set_sso_credentials(username, password)
@@ -240,6 +253,7 @@ def _handle_auth(args: argparse.Namespace, json_mode: bool) -> int:
         interactive=not args.no_interactive and not json_mode,
         json_mode=json_mode,
         agent_code=args.mfa_code,
+        gui_mode=gui_mode,
     )
     driver = UgrSamlDriver(
         base_url=base_url,
@@ -782,6 +796,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_auth.add_argument("--username", help="Institutional username.")
     p_auth.add_argument("--password", help="Institutional password.")
     p_auth.add_argument("--mfa-code", help="6-digit email verification code for non-interactive Tier 3 auth.")
+    p_auth.add_argument("--gui", action="store_true", help="Prompt for credentials/MFA via native OS GUI popup dialog.")
     p_auth.add_argument("--url", help="Override Moodle base URL.")
     p_auth.add_argument("--offline", action="store_true", help="Check local session state without network ping.")
     p_auth.add_argument("--no-interactive", action="store_true", help="Disable interactive prompts.")
