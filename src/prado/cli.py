@@ -563,9 +563,13 @@ def _sync_single_course(
             # Download to temporary location or directly via SafeDownloader
             dl_res = downloader.download_file(url=download_url, dest_path=dest_abs)
             if dl_res.status == DownloadStatus.DOWNLOADED:
+                try:
+                    resolved_rel_str = dl_res.dest_path.relative_to(cfg.courses_root).as_posix()
+                except ValueError:
+                    resolved_rel_str = rel_path_str
                 state_db.upsert_file(
                     FileRecord(
-                        path=rel_path_str,
+                        path=resolved_rel_str,
                         course_id=course.id,
                         remote_url=download_url,
                         original_hash=dl_res.sha256,
@@ -887,6 +891,38 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _run_interactive_menu() -> int:
+    """Simple, friendly interactive TUI menu when `prado` is run with no arguments in a terminal."""
+    print("\n╔══════════════════════════════════════════════════════════════╗")
+    print("║        🎓 PradoOS — UGR PRADO Academic Sync Engine           ║")
+    print("╠══════════════════════════════════════════════════════════════╣")
+    print("║  [1] 🔄 Sync Courses Now                                     ║")
+    print("║  [2] ⚙️  First-Time Setup / Change Settings (Wizard)          ║")
+    print("║  [3] 📚 Discover & List Enrolled Courses                     ║")
+    print("║  [4] 🩺 Run System Health Check (Doctor)                     ║")
+    print("║  [5] ⏱️  Enable Automatic Background Sync (Every 4h)          ║")
+    print("║  [6] ⭐ Star ugr-prado-sync on GitHub                        ║")
+    print("║  [0] 🚪 Exit                                                 ║")
+    print("╚══════════════════════════════════════════════════════════════╝")
+    try:
+        choice = input("\nSelect an option [1-6, 0 to exit]: ").strip()
+    except (EOFError, KeyboardInterrupt):
+        print()
+        return 0
+
+    menu_map = {
+        "1": ["sync", "--adopt"],
+        "2": ["onboard"],
+        "3": ["discover"],
+        "4": ["doctor", "--fix"],
+        "5": ["daemon", "install"],
+        "6": ["star"],
+    }
+    if choice in menu_map:
+        return main(menu_map[choice])
+    return 0
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     """
     Main CLI entry point returning POSIX exit codes:
@@ -899,6 +935,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     parser = build_parser()
     if not raw_args:
+        if argv is None and hasattr(sys.stdin, "isatty") and sys.stdin.isatty() and hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
+            return _run_interactive_menu()
         parser.print_help()
         return 0
 

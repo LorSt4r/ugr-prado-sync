@@ -168,8 +168,11 @@ class Course:
             )
 
     def to_dict(self) -> Dict[str, Any]:
-        """Returns JSON-serializable dictionary representation."""
-        return asdict(self)
+        """Returns JSON-serializable dictionary representation (omits large inline data:image/ SVGs)."""
+        d = asdict(self)
+        if isinstance(d.get("courseimage"), str) and d["courseimage"].startswith("data:image/"):
+            d["courseimage"] = None
+        return d
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> Course:

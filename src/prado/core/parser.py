@@ -416,12 +416,20 @@ class CourseHtmlParser:
                     "content": content,
                 })
         else:
+            seen_discuss_urls = set()
             for a in soup.find_all("a", href=True):
-                if "/mod/forum/discuss.php?d=" in a["href"]:
-                    d_url = urllib.parse.urljoin(base_url, a["href"])
+                href = a["href"]
+                if "/mod/forum/discuss.php?d=" in href and "#" not in href:
+                    d_url = urllib.parse.urljoin(base_url, href).split("#")[0]
+                    if d_url in seen_discuss_urls:
+                        continue
+                    subj_text = clean_activity_title(a.get_text(" ", strip=True))
+                    if not subj_text:
+                        continue
+                    seen_discuss_urls.add(d_url)
                     discussions.append({
                         "forum_id": activity.id,
-                        "subject": clean_activity_title(a.get_text(" ", strip=True)),
+                        "subject": subj_text,
                         "url": d_url,
                     })
 

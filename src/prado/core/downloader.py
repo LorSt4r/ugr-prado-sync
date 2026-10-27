@@ -137,6 +137,8 @@ def resolve_destination_path(
         return dest_path.parent / sanitize_path_segment(cd_filename)
 
     if is_dynamic_or_empty_extension(dest_ext) or (url_lacks_clean_ext and dest_ext.lower() != resolved_ext.lower()):
+        if dest_stem.lower().endswith(resolved_ext.lower()):
+            return dest_path.parent / dest_stem
         return dest_path.parent / f"{dest_stem}{resolved_ext}"
 
     return dest_path

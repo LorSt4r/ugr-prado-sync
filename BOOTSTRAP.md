@@ -1,97 +1,77 @@
 # 🎓 PradoOS — OpenClaw Agent Bootstrap Playbook (`BOOTSTRAP.md`)
 
 Welcome, AI Coding Assistant (**Antigravity**, **Claude Code**, **Cursor**, **Codex**, or **Windsurf**)!
-A student has shared this repository with you so you can autonomously install, configure, and tailor **PradoOS (`prado-os`)** to their operating system (macOS, Windows, or Linux Desktop) and academic faculty.
+A student has shared this repository with you so you can autonomously install, configure, and tailor **PradoOS (`ugr-prado-sync`)** to their operating system (macOS, Windows, or Linux Desktop) and academic faculty.
 
-Follow this **2-Phase Progressive Disclosure** protocol step by step. Do **not** overwhelm the student with 10 questions at once.
+---
+
+## 🗣️ Golden UX Rule: Zero CLI Jargon to the Student
+
+- **Speak 100% naturally like a personal academic concierge.**
+- **NEVER show CLI command names, flags (`--json`, `--subgroups`, `prado star`, `prado daemon`), or internal code details in your messages to the student.**
+- Run all commands silently in the background and present only clean, human-friendly outcomes and simple choices!
 
 ---
 
 ## 🚀 Phase 1: Under 60 Seconds to First Sync
 
-### Step 1 — Detect OS & Install `prado`
-1. Detect the user's OS (`uname -s` on POSIX or `$env:OS` on Windows).
-2. Run the included installer script (which automatically finds Python `>= 3.10` or `uv`, avoids macOS's old `/usr/bin/python3` `3.9.6`, upgrades `pip`, and installs `prado-os` into `.venv`):
-   - **macOS / Linux:**
-     ```bash
-     ./install.sh
-     ```
-   - **Windows (PowerShell):**
-     ```powershell
-     .\install.ps1
-     ```
-3. Run the health check in JSON mode to inspect the environment:
+### Step 1 — Detect OS & Install Silently
+1. Run the installer script silently:
+   - **macOS / Linux:** `./install.sh`
+   - **Windows (PowerShell):** `.\install.ps1`
+2. Verify system readiness in the background:
    ```bash
    .venv/bin/prado doctor --json
    ```
 
 ### Step 2 — Ask Only the 2 Essential Questions
 Ask the student concisely in their preferred language:
-1. **Where should your university courses folder live?** (Suggest a sensible default like `~/Documents/UGR_Courses` or their existing university folder if they are adopting mid-semester).
-2. **Which folder organization style do you prefer?**
-   - **`smart` (Recommended for Engineering, Sciences, Economics):** Separates `Teoria/`, `Practicas/P1..Pn/`, and `General/`.
-   - **`mirror` (Recommended for Law, Medicine, Humanities, Psychology):** Mirrors the exact section names (`Bloque I`, `Casos Clínicos`, `Jurisprudencia`, etc.) created by professors on PRADO.
+1. **Where would you like to keep your university courses folder?** (Suggest a sensible default like `~/Documents/UGR_Courses`, or their existing university folder if they already have files downloaded).
+2. **How would you like your course folders organized?**
+   - **Smart Theory vs. Practice** *(Recommended for Engineering, Sciences, Economics)*: Automatically separates lectures (`Teoria/`), labs/assignments (`Practicas/P1..Pn/`), and syllabus (`General/`).
+   - **Exact PRADO Mirror** *(Recommended for Law, Medicine, Humanities, Psychology)*: Keeps the exact section folders created by professors on PRADO.
 
-Then apply their choices non-interactively:
+Once they answer, apply their choices in the background:
 ```bash
 .venv/bin/prado onboard --courses-root "<PATH>" --preset <smart|mirror> --no-interactive --no-star --json
 ```
 
-### Step 3 — Zero-Terminal Native GUI Authentication (`--gui`)
-**Do NOT ask the student to open a terminal manually and do NOT ask them to paste their password in chat!**
-Instead, execute the native OS GUI authentication command directly yourself:
-```bash
-.venv/bin/prado auth login --gui --json
-```
-- **What happens automatically:** `prado auth login --gui --json` pops up a **native OS system dialog** right on the student's screen (`osascript` with hidden password bullets on macOS, `PromptForCredential` on Windows, `zenity`/`kdialog` on Linux) asking for their institutional email (`@correo.ugr.es`), password (saved directly into macOS Keychain / Windows Credential Manager / Linux SecretService without ever touching agent chat or logs), and—if requested by PRADO—the 6-digit MFA verification code!
-- **Fallback (Exit Code `2` `mfa_required`):** If the student closes the MFA popup before entering the 6-digit code, `prado` exits with code `2`:
-   ```json
-   {
-     "status": "mfa_required",
-     "tier": 3,
-     "factor": "email",
-     "retry_command": "prado auth login --mfa-code <6-digit-code>"
-   }
-   ```
-   Ask the student for the 6-digit code in chat and run:
-   ```bash
-   .venv/bin/prado auth login --mfa-code <CODE> --json
-   ```
-   Once verified, PradoOS stores a **30-day persistent `MFA_TOKEN` device trust cookie** (`0600` permissions in `~/.config/prado/session.json`) so future syncs run silently without MFA prompts.
+### Step 3 — Security Reassurance & Native OS Login
+1. **Perform a Quick Local Security Audit for the Student:**
+   Briefly inspect [`src/prado/auth/credentials.py`](src/prado/auth/credentials.py) and [`src/prado/auth/saml.py`](src/prado/auth/saml.py), then reassure the student in plain language:
+   > *"I have verified the source code locally on your computer: your UGR password is saved exclusively inside your operating system's native Keychain (macOS Keychain / Windows Credential Manager / Linux SecretService) and is only ever transmitted directly to the official `idp.ugr.es` server—never to any third party or chat log."*
+2. **Trigger the Native OS Login Window (or Offer Direct OS Keychain Entry):**
+   - Run the native OS dialog directly so a system login window pops up on their screen:
+     ```bash
+     .venv/bin/prado auth login --gui --json
+     ```
+   - *(Note for security-conscious users: if a student prefers to save their password directly using their operating system's built-in tool without typing it into the popup, they can also use macOS Keychain Access / `/usr/bin/security add-generic-password -U -s "prado:sso" -a "email@correo.ugr.es" -w`, Windows Credential Manager `cmdkey /generic:prado:sso /user:email@correo.ugr.es /pass`, or Linux `secret-tool store --label="PradoOS" service prado:sso username email@correo.ugr.es`).*
+   - If the login requires a 6-digit email verification code (`exit code 2` / `mfa_required`) and the student didn't enter it in the popup, ask them for the 6-digit code sent to their `@correo.ugr.es` email and complete login in the background:
+     ```bash
+     .venv/bin/prado auth login --mfa-code <CODE> --json
+     ```
 
-### Step 4 — Auto-Discover Courses & Dry-Run Preview
-1. Discover enrolled courses:
-   ```bash
-   .venv/bin/prado discover --json
-   ```
-2. Preview the exact folder tree before writing anything to disk:
-   ```bash
-   .venv/bin/prado sync --dry-run --json
-   ```
-3. Present a clean summary of discovered courses and run the first real sync (adding `--adopt` if the student already has downloaded files in their destination folder so PradoOS matches them by SHA-256 without re-downloading):
+### Step 4 — Auto-Discover & Sync Courses
+1. Run discovery and sync (with mid-semester adoption enabled so any pre-existing files are matched by SHA-256 without re-downloading):
    ```bash
    .venv/bin/prado sync --adopt --json
    ```
+2. Show the student a clean table of their synced courses, how many files were organized, and where their `DASHBOARD.md` and `deadlines.ics` calendar file are located.
 
 ---
 
 ## ⭐ Post-Sync Milestone: The GitHub Star Loop
 
-Immediately after the first successful sync completes (and `DASHBOARD.md`, `CHANGELOG.md`, and `deadlines.ics` are generated in their courses folder):
-1. Show the student their newly organized courses and upcoming deadlines.
-2. **Tastefully invite them once to star the repository on GitHub:**
-   > *"Your courses and deadlines are now synced! If PradoOS saved you time, would you like me to star `LorSt4r/ugr-prado-sync` on GitHub for you (`prado star`)?"*
-3. If they agree, run:
-   ```bash
-   .venv/bin/prado star --json
-   ```
+Right after the first successful sync:
+- Politely ask the student in natural language (without mentioning CLI commands!):
+  > *"Your courses are all synced and organized! If this tool saved you time, would you like me to leave a star on the GitHub repository for you?"*
+- If they say yes, run `.venv/bin/prado star --json` silently in the background.
 
 ---
 
-## ⚡ Phase 2: Optional Power-Ups (Offer After First Sync)
+## ⚡ Phase 2: Optional Power-Ups (Offer Simply in Plain Language)
 
-Once Phase 1 is working, briefly offer these optional enhancements:
-1. **Lab / Seminar Subgroup Filtering (`--subgroups`):** If a course publishes files for multiple lab groups (`Grupo C1`, `C2`, `C3`), configure the student's subgroup so other groups are neatly archived in `_subgroups_archive/`.
-2. **Zero-Touch 2FA via IMAP (`imap.ugr.es`):** Configure IMAP SSL so PradoOS automatically extracts future 6-digit MFA codes when the 30-day token expires.
-3. **Background Sync Daemon (`prado daemon install`):** Install a native background timer (`launchd` on macOS, `systemd --user` / `cron` on Linux, `schtasks` on Windows) to sync every 4 hours.
-4. **Calendar & Notifications:** Import `deadlines.ics` into Apple Calendar, Google Calendar, Outlook, or Thunderbird, or configure Desktop / Telegram / Discord alerts.
+After the first sync, briefly ask if they'd like you to set up any of these optional conveniences (again, **never show flag or command names** to the student—just ask naturally and run the commands yourself!):
+1. **Filter by Lab Subgroup:** Ask if they belong to specific lab groups (e.g. `C2`, `E3`, `A1`) so files from other groups are tucked away into an archive folder. *(Behind the scenes: `.venv/bin/prado onboard --subgroups "ED_C=C2,..." --no-interactive --no-star --json`)*.
+2. **Automatic Background Sync:** Ask if they want their courses to sync automatically in the background every 4 hours. *(Behind the scenes: `.venv/bin/prado daemon install --json`)*.
+3. **Automatic 2FA Renewal via Email:** Ask if they want automatic 2FA renewal when the 30-day session expires. *(Behind the scenes: `--imap-enabled --imap-host imap.ugr.es`)*.
