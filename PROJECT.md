@@ -1,6 +1,6 @@
 # Project: PradoOS (`prado-os`)
 
-A production-ready, cross-platform (macOS, Linux Desktop, Windows) open-source academic workflow engine for Moodle / PRADO UGR (`pradogrado`, `pradoposgrado`, `prado.ugr.es`, and generic Moodle instances). Supports both OpenClaw-style Agent-Mediated Onboarding (`BOOTSTRAP.md`, `AGENTS.md`, `CLAUDE.md`, `.agents/skills/prado-os/SKILL.md`, `USER.md`) and a 100% Free & Deterministic Standalone CLI (`prado onboard`, `prado sync`, `prado discover`, `prado doctor`, `prado daemon`, `prado star`) with optional local/external LLM integration (Ollama, DeepSeek, Gemini, OpenAI).
+A production-ready, cross-platform (macOS, Linux Desktop, Windows) open-source academic workflow engine for Moodle / PRADO UGR (`pradogrado`, `pradoposgrado`, `prado.ugr.es`, and generic Moodle instances). Supports both Agent-Mediated Onboarding (`BOOTSTRAP.md`, `AGENTS.md`, `CLAUDE.md`, `.agents/skills/prado-os/SKILL.md`, `USER.md`) and a 100% Free & Deterministic Standalone CLI (`prado onboard`, `prado sync`, `prado discover`, `prado doctor`, `prado daemon`, `prado star`) with optional local/external LLM integration (Ollama, DeepSeek, Gemini, OpenAI).
 
 ---
 
@@ -8,7 +8,7 @@ A production-ready, cross-platform (macOS, Linux Desktop, Windows) open-source a
 
 ### Component Diagram & Data Flow
 ```
-User / AI Agent (Terminal / OpenClaw)
+User / AI Agent (Terminal / IDE)
         │
         ▼
    [ prado CLI ] (Click/Argparse, universal --json and --help)
@@ -60,15 +60,15 @@ projects/prado-sync/
 ├── config.example.yaml         # Comprehensive annotated configuration template
 ├── install.sh                  # One-liner Unix (macOS / Linux) installer
 ├── install.ps1                 # One-liner Windows PowerShell installer
-├── BOOTSTRAP.md                # OpenClaw agent bootstrap and progressive disclosure guide
-├── AGENTS.md                   # OpenClaw workspace manifesto and operational instructions
+├── BOOTSTRAP.md                # AI agent bootstrap and progressive disclosure guide
+├── AGENTS.md                   # Agent workspace manifesto and operational instructions
 ├── CLAUDE.md                   # Claude Code workspace guidelines
 ├── USER.md.example             # Example student context and preferences template
 ├── .gitignore                  # Git ignore rules (including .agents/teamwork/)
 ├── .agents/
 │   └── skills/
 │       └── prado-os/
-│           └── SKILL.md        # Tracked OpenClaw / Antigravity agent skill definition
+│           └── SKILL.md        # Tracked Antigravity / AI agent skill definition
 ├── src/
 │   └── prado/
 │       ├── __init__.py         # Package metadata
@@ -171,9 +171,9 @@ Every feature from the Survey phase appears here with its assigned milestone.
 | 25 | Background Daemon Manager | OS service integration (`launchd` on macOS, `systemd --user` / `cron` on Linux, `schtasks` on Windows) | M3 | Survey 3 / Req R3 |
 | 26 | `prado doctor` Diagnostics | 9 diagnostic probes checking credentials, network, permissions, dependencies, config integrity | M3 | Survey 3 / Req R3 |
 | 27 | Unified CLI Suite | `prado onboard`, `auth`, `discover`, `courses`, `sync`, `doctor`, `daemon`, `star` with `--help` and `--json` | M4 | Survey 3 / Req R4 |
-| 28 | OpenClaw Phase 1 Onboarding | <60s flow: Credentials -> Destination -> Course selection & dry-run -> First sync -> Folder reveal | M4 | Survey 3 / Req R4 |
+| 28 | Phase 1 Onboarding | <60s flow: Credentials -> Destination -> Course selection & dry-run -> First sync -> Folder reveal | M4 | Survey 3 / Req R4 |
 | 29 | GitHub Star Loop | Tasteful 1-time prompt after first successful sync (`prado star` via `gh api` or browser URL) | M4 | Survey 3 / Req R4 |
-| 30 | OpenClaw Agent Workspace | `BOOTSTRAP.md`, `AGENTS.md`, `CLAUDE.md`, `USER.md.example`, `.agents/skills/prado-os/SKILL.md` | M4 | Survey 3 / Req R4 |
+| 30 | Agent Workspace | `BOOTSTRAP.md`, `AGENTS.md`, `CLAUDE.md`, `USER.md.example`, `.agents/skills/prado-os/SKILL.md` | M4 | Survey 3 / Req R4 |
 | 31 | One-Liner Installers | Cross-platform `install.sh` (macOS/Linux) and `install.ps1` (Windows) | M4 | Survey 3 / Req R4 |
 | 32 | Bilingual Documentation | Comprehensive `README.md` (English & Spanish), `config.example.yaml` | M4 | Survey 3 / Req R4 |
 | 33 | Opaque-Box E2E Test Suite | 4-tier requirement-driven test suite (Tiers 1-4) published as `TEST_READY.md` | Testing Track | Req R1-R4 |
@@ -189,7 +189,7 @@ Every feature from the Survey phase appears here with its assigned milestone.
 | M1 | Core Foundation, Security & 3-Tier SAML/MFA Auth | Features 1-8: Git hygiene, pyproject.toml, config/state isolation, keyring & fallback, headless SAML SSO, 3-tier MFA | none | PLANNED |
 | M2 | Course Discovery, HTML Parsing, Routing & Safe Downloader | Features 9-18: AJAX discovery, activity parsing, PRADO Mirror & Smart Theory/Practice routing, chunked downloader, mid-semester adoption, overwrite protection, SQLite state | M1 | PLANNED |
 | M3 | Exporters, Notifications, Scheduler & Doctor | Features 19-26: DASHBOARD.md, CHANGELOG.md, RFC-5545 deadlines.ics, multi-OS notifications, BYO-AI layer, background daemon, prado doctor | M2 | PLANNED |
-| M4 | OpenClaw Dual Onboarding, CLI Suite & GitHub Star Loop | Features 27-32: Standalone CLI commands with --json, OpenClaw agent playbooks (BOOTSTRAP, AGENTS, CLAUDE, USER, SKILL), install.sh/ps1, README (EN/ES), prado star | M3 | PLANNED |
+| M4 | Dual Onboarding, CLI Suite & GitHub Star Loop | Features 27-32: Standalone CLI commands with --json, agent playbooks (BOOTSTRAP, AGENTS, CLAUDE, USER, SKILL), install.sh/ps1, README (EN/ES), prado star | M3 | PLANNED |
 | M5 | Final E2E Pass, Live Integration & Adversarial Hardening | Features 34-35: 100% E2E test pass (Tiers 1-4), live macOS integration test against pradogrado2627.ugr.es, Tier 5 adversarial coverage hardening | M4, E2E Testing Track | PLANNED |
 
 ---

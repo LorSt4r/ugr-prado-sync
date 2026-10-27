@@ -9,7 +9,7 @@
 ## 1. Purpose & Design Philosophy
 
 PradoOS is an open-source academic workflow engine built for two complementary modes of operation:
-1. **OpenClaw Agent-Mediated Mode:** When a student gives this repository URL to an AI coding agent (Antigravity, Claude Code, Codex, Cursor), the agent reads [`BOOTSTRAP.md`](BOOTSTRAP.md) and `.agents/skills/prado-os/SKILL.md` to guide the student through setup and daily academic management.
+1. **Agent-Mediated Mode:** When a student gives this repository URL to an AI coding agent (Antigravity, Claude Code, Codex, Cursor), the agent reads [`BOOTSTRAP.md`](BOOTSTRAP.md) and `.agents/skills/prado-os/SKILL.md` to guide the student through setup and daily academic management.
 2. **100% Free & Deterministic Standalone CLI:** Every feature works deterministically without any paid AI subscription or external API keys via the `prado` command-line interface. Optional BYO-AI providers (`Ollama` local models, `DeepSeek`, `Gemini`, `OpenAI`) can be enabled in `config.yaml` if desired.
 
 ---

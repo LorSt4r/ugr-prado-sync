@@ -19,7 +19,7 @@ Whether you study Computer Engineering at ETSIIT, Law, Medicine, Humanities, or 
 ### ✨ Why PradoOS?
 
 1. **⚡ Two Ways to Install & Onboard:**
-   - **Agent-Mediated (OpenClaw Style):** Paste this repository URL into **Google Antigravity**, **Claude Code**, **Cursor**, or **Codex**. The AI agent reads [`BOOTSTRAP.md`](BOOTSTRAP.md) and `.agents/skills/prado-os/SKILL.md` and sets everything up for your OS in under 60 seconds.
+   - **Agent-Mediated Onboarding:** Paste this repository URL into **Google Antigravity**, **Claude Code**, **Cursor**, or **Codex**. The AI agent reads [`BOOTSTRAP.md`](BOOTSTRAP.md) and `.agents/skills/prado-os/SKILL.md` and sets everything up for your OS in under 60 seconds.
    - **100% Free & Deterministic CLI:** No AI subscription required. Run `prado onboard` and `prado sync` standalone forever, with optional Bring-Your-Own-AI (`Ollama`, `DeepSeek`, `Gemini`, `OpenAI`) if you want AI forum summaries later.
 2. **🔐 3-Tier Headless SAML SSO & MFA Engine:**
    - **Tier 1 (30-Day Device Trust):** Persists Moodle's `MFA_TOKEN` cookie with strict `0600` permissions (`~/.config/prado/session.json`) so you only verify 2FA once every 30 days.
@@ -96,7 +96,7 @@ prado star                            # Star PradoOS on GitHub via `gh` CLI or b
 ### ✨ Características Principales
 
 1. **Instalación Dual (Con Agente IA o 100% Gratuita por Terminal):**
-   - **Mediante Agente IA (Estilo OpenClaw):** Pega el enlace del repositorio en **Antigravity**, **Claude Code**, **Cursor** o **Codex** y el agente te guiará paso a paso leyendo [`BOOTSTRAP.md`](BOOTSTRAP.md).
+   - **Mediante Agente IA:** Pega el enlace del repositorio en **Antigravity**, **Claude Code**, **Cursor** o **Codex** y el agente te guiará paso a paso leyendo [`BOOTSTRAP.md`](BOOTSTRAP.md).
    - **CLI Independiente y Determinista:** Funciona al 100% sin suscripciones de IA ni claves API.
 2. **Autenticación Headless SAML SSO y MFA en 3 Niveles:**
    - **Nivel 1 (Confianza de 30 días):** Guarda el token `MFA_TOKEN` con permisos `0600` para no pedir código 2FA en cada sincronización.

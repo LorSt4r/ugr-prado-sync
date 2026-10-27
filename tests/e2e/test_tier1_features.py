@@ -1300,10 +1300,10 @@ class TestFeature27UnifiedCliSuiteAndJsonMode:
 
 
 # =============================================================================
-# Feature 28: OpenClaw Phase 1 Onboarding (5 tests)
+# Feature 28: Phase 1 Onboarding (5 tests)
 # =============================================================================
 
-class TestFeature28OpenClawPhase1Onboarding:
+class TestFeature28Phase1Onboarding:
     def test_f28_01_onboarding_phase_1_steps(self):
         steps = ["credentials", "destination_folder", "course_preview", "first_sync", "folder_reveal"]
         assert len(steps) == 5
@@ -1364,10 +1364,10 @@ class TestFeature29GitHubStarLoop:
 
 
 # =============================================================================
-# Feature 30: OpenClaw Agent Workspace & Playbooks (5 tests)
+# Feature 30: Agent Workspace & Playbooks (5 tests)
 # =============================================================================
 
-class TestFeature30OpenClawAgentWorkspace:
+class TestFeature30AgentWorkspace:
     def test_f30_01_bootstrap_md_exists_and_valid(self):
         root = Path(__file__).resolve().parent.parent.parent
         bootstrap = root / "BOOTSTRAP.md"
