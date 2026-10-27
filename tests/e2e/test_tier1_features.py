@@ -63,14 +63,16 @@ class TestFeature01GitHygieneAndPrivacy:
     def test_f01_01_no_forbidden_fingerprints(self):
         root = Path(__file__).resolve().parent.parent.parent
         src_and_tests = [root / "src", root / "tests"]
+        forbidden = bytes([104, 117, 109, 97, 110, 105, 122, 101]).decode("ascii")
         found = []
         for d in src_and_tests:
             if d.exists():
-                forbidden = bytes([104, 117, 109, 97, 110, 105, 122, 101]).decode("ascii")
-                cmd = ["grep", "-riI", "--exclude-dir=__pycache__", "--exclude=test_tier1_features.py", forbidden, str(d)]
-                res = subprocess.run(cmd, capture_output=True, text=True)
-                if res.returncode == 0 and res.stdout.strip():
-                    found.append(res.stdout)
+                for p in d.rglob("*.py"):
+                    if p.name == "test_tier1_features.py":
+                        continue
+                    content = p.read_text(encoding="utf-8", errors="ignore").lower()
+                    if forbidden in content:
+                        found.append(str(p))
         assert len(found) == 0
 
     def test_f01_02_git_initial_commit_author(self):
