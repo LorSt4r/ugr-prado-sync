@@ -116,7 +116,7 @@ class TestOnboardingAndStarUnit:
     def test_cli_auth_login_gui_mode(
         self, mock_config_dir, mock_courses_dir, in_memory_keyring, monkeypatch, capsys
     ):
-        prompts = iter(["gui_student@correo.ugr.es", "gui_secret_pass"])
+        prompts = iter(["gui_student", "gui_secret_pass"])
         monkeypatch.setattr("prado.cli.prompt_gui_input", lambda **kw: next(prompts))
         monkeypatch.setattr("prado.auth.saml.UgrSamlDriver.login", lambda self, username, password: None)
 
@@ -125,3 +125,29 @@ class TestOnboardingAndStarUnit:
         assert code == 0
         assert out["status"] == "success"
         assert out["username"] == "gui_student@correo.ugr.es"
+
+    def test_cli_auth_login_purges_invalid_credentials_and_reprompts_in_gui(
+        self, mock_config_dir, mock_courses_dir, in_memory_keyring, monkeypatch, capsys
+    ):
+        from prado.exceptions import InvalidCredentialsError
+
+        prompts_fail = iter(["student_typo", "wrong_pass"])
+        monkeypatch.setattr("prado.cli.prompt_gui_input", lambda **kw: next(prompts_fail))
+
+        def fail_login(self, username, password):
+            raise InvalidCredentialsError("Bad credentials")
+
+        monkeypatch.setattr("prado.auth.saml.UgrSamlDriver.login", fail_login)
+        code1 = main(["auth", "login", "--gui", "--json"])
+        capsys.readouterr()
+        assert code1 == 1
+        assert len(in_memory_keyring) == 0
+
+        prompts_ok = iter(["student_fixed", "correct_pass"])
+        monkeypatch.setattr("prado.cli.prompt_gui_input", lambda **kw: next(prompts_ok))
+        monkeypatch.setattr("prado.auth.saml.UgrSamlDriver.login", lambda self, username, password: None)
+
+        code2 = main(["auth", "login", "--gui", "--json"])
+        out2 = json.loads(capsys.readouterr().out)
+        assert code2 == 0
+        assert out2["username"] == "student_fixed@correo.ugr.es"

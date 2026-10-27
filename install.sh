@@ -52,16 +52,16 @@ fi
 
 # 3. Create isolated virtual environment & install package
 VENV_DIR="$SRC_DIR/.venv"
-printf "==> Creating Python virtual environment at %s\n" "$VENV_DIR"
-if [ -n "$PYTHON_BIN" ]; then
-    "$PYTHON_BIN" -m venv "$VENV_DIR"
-    "$VENV_DIR/bin/pip" install --upgrade pip setuptools wheel >/dev/null
-    "$VENV_DIR/bin/pip" install -e "$SRC_DIR"
+printf "==> Preparing Python virtual environment at %s\n" "$VENV_DIR"
+if [ -x "$VENV_DIR/bin/python" ] && "$VENV_DIR/bin/python" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)' 2>/dev/null; then
+    printf "==> Reusing existing Python >= 3.10 virtual environment\n"
+elif [ -n "$PYTHON_BIN" ]; then
+    "$PYTHON_BIN" -m venv --clear "$VENV_DIR"
 else
-    uv venv "$VENV_DIR" --python ">=3.10" --seed
-    "$VENV_DIR/bin/pip" install --upgrade pip setuptools wheel >/dev/null
-    "$VENV_DIR/bin/pip" install -e "$SRC_DIR"
+    uv venv --clear "$VENV_DIR" --python ">=3.10" --seed
 fi
+"$VENV_DIR/bin/pip" install --upgrade pip setuptools wheel >/dev/null
+"$VENV_DIR/bin/pip" install -e "$SRC_DIR"
 
 # 4. Symlink `prado` binary into ~/.local/bin
 mkdir -p "$BIN_DIR"

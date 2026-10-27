@@ -82,6 +82,21 @@ def _emit_json(payload: Dict[str, Any]) -> None:
     print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
 
 
+def normalize_ugr_username(username: Optional[str], moodle_url: str = "") -> Optional[str]:
+    """
+    Normalizes UGR institutional usernames: if a student enters only the local part
+    (e.g. 'lorenzovasile') for a '*.ugr.es' Moodle instance, automatically appends '@correo.ugr.es'.
+    """
+    if not username:
+        return username
+    clean = username.strip()
+    if not clean:
+        return None
+    if "@" not in clean and ".ugr.es" in (moodle_url or "").lower():
+        return f"{clean}@correo.ugr.es"
+    return clean
+
+
 def _obtain_authenticated_session(
     cfg: PradoConfig,
     mfa_code: Optional[str] = None,
@@ -208,26 +223,35 @@ def _handle_auth(args: argparse.Namespace, json_mode: bool) -> int:
 
     # action == "login"
     gui_mode = bool(getattr(args, "gui", False))
-    username = args.username or cfg.username
+    username = args.username
     password = args.password
-    if not password and username:
-        try:
-            stored = cred_store.get_sso_credentials(username)
-            username, password = stored
-        except InvalidCredentialsError:
-            pass
+
+    # Only reuse stored credentials without prompting if NOT explicitly launching interactive --gui login
+    # (or if --mfa-code is provided to complete a pending Tier 3 MFA challenge)
+    if not gui_mode or args.mfa_code:
+        username = username or cfg.username
+        if not password and username:
+            try:
+                stored = cred_store.get_sso_credentials(username)
+                username, password = stored
+            except InvalidCredentialsError:
+                pass
 
     if not username:
         if gui_mode:
+            default_email = normalize_ugr_username(cfg.username, base_url) or ""
             username = prompt_gui_input(
                 prompt="Enter your institutional UGR email (@correo.ugr.es):",
                 title="PradoOS — UGR SSO Login",
                 hidden=False,
+                default=default_email,
             )
         elif not json_mode and not args.no_interactive and sys.stdin.isatty():
             username = input("Institutional Username / Email: ").strip()
         if not username:
             raise InvalidCredentialsError("Username is required for 'prado auth login'.")
+
+    username = normalize_ugr_username(username, base_url) or username
 
     if not password:
         if gui_mode:
@@ -261,7 +285,12 @@ def _handle_auth(args: argparse.Namespace, json_mode: bool) -> int:
         mfa_resolver=mfa_resolver,
         credential_store=cred_store,
     )
-    driver.login(username=username, password=password)
+    try:
+        driver.login(username=username, password=password)
+    except InvalidCredentialsError:
+        # Purge invalid credentials from Keychain/Vault so subsequent attempts re-prompt cleanly
+        cred_store.delete_sso_credentials(username)
+        raise
     tokens = sess_mgr.extract_mfa_tokens()
 
     if json_mode:
