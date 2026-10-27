@@ -1,0 +1,15 @@
+# 👤 USER.md — Local Student Profile Template
+# Copy this file to `USER.md` (which is git-ignored) so your AI assistant remembers your academic preferences.
+
+- **Student Name:** Example Student
+- **University / Faculty:** Universidad de Granada (UGR) — ETSIIT / Derecho / Medicina / Ciencias / Letras
+- **Academic Profile:** Undergraduate (`pradogrado`) / Master (`pradoposgrado`) / Erasmus+ Mobility
+- **Preferred Language:** Español / English / Italiano
+- **Courses Root Directory:** `~/Documents/UGR_Courses`
+- **Folder Routing Preset:** `smart` (`Teoria` vs `Practicas`) or `mirror` (Exact PRADO section names)
+- **Active Semester:** `1` (Primer Cuatrimestre)
+- **Lab / Seminar Subgroups:**
+  - `ED_C`: `C2`
+  - `SO_E`: `E3`
+- **Preferred Calendar App:** Google Calendar / Apple Calendar / Outlook / Thunderbird (`deadlines.ics`)
+- **AI Summarization Mode:** `deterministic` (100% free, no API keys) / `ollama` / `deepseek` / `gemini` / `openai`

@@ -1,0 +1,76 @@
+# =============================================================================
+# PradoOS (`prado-os`) — Annotated Configuration Template
+# Location:
+#   - macOS / Linux : ~/.config/prado/config.yaml (permissions 0600)
+#   - Windows       : %APPDATA%\prado\config.yaml
+#
+# SECURITY NOTE:
+# Passwords are NEVER stored in this file. They are stored in your OS native
+# Keyring (macOS Keychain, Windows Credential Manager, Linux SecretService)
+# or in an AES-128-CBC + HMAC-SHA256 encrypted vault (`credentials.vault`).
+# =============================================================================
+
+version: "1.0"
+
+# Moodle / PRADO platform URL:
+# - Undergraduate (Grado): https://pradogrado2627.ugr.es
+# - Postgraduate (Posgrado / Máster): https://pradoposgrado2627.ugr.es
+# - CEPRUD / General: https://prado.ugr.es
+moodle_url: "https://pradogrado2627.ugr.es"
+
+# Authentication driver ('ugr_saml' for Universidad de Granada SimpleSAMLphp IdP)
+sso_type: "ugr_saml"
+
+# Institutional email address used for SAML SSO login
+username: "student@correo.ugr.es"
+
+# Credential backend preference: 'auto' (recommended), 'keyring', 'vault_file', or 'env'
+credential_store: "auto"
+
+# Local directory where your course folders, DASHBOARD.md, CHANGELOG.md, and deadlines.ics live
+courses_root: "~/Documents/UGR_Courses"
+
+# -----------------------------------------------------------------------------
+# 3-Tier Multi-Factor Authentication (MFA) Configuration
+# -----------------------------------------------------------------------------
+mfa:
+  # Tier 1: Request & persist 30-day device trust token (MFA_TOKEN_*) so you only verify once a month
+  enable_device_trust: true
+
+  # Tier 2a: Cross-platform IMAP SSL auto-fetch (extracts 6-digit code automatically from inbox)
+  imap_enabled: false
+  imap_host: "imap.ugr.es"
+  imap_port: 993
+  imap_ssl: true
+  imap_username: "student@correo.ugr.es"
+  imap_folder: "INBOX"
+  imap_timeout: 60
+  imap_poll_interval: 3
+
+  # Tier 2b: macOS Apple Mail zero-config fallback (reads code via AppleScript if Mail.app is open)
+  apple_mail_enabled: true
+  apple_mail_account: "auto"
+
+# -----------------------------------------------------------------------------
+# Synchronization, Folder Routing & Subgroup Filtering
+# -----------------------------------------------------------------------------
+sync:
+  # Folder organization preset:
+  # - 'smart'  : Separates Teoria/, Practicas/P1..Pn/, and General/ (ideal for STEM, Economics, Sciences)
+  # - 'mirror' : Mirrors exact Moodle section names (ideal for Law, Medicine, Humanities, Psychology)
+  preset: "smart"
+
+  # Active semester filter: 1 (1st Semester), 2 (2nd Semester), or null (all active courses)
+  semester: 1
+
+  # Default dry-run flag (false = perform real downloads)
+  dry_run: false
+
+  # Optional lab/seminar subgroup mapping per course slug or ID.
+  # Files belonging to other subgroups (e.g. C1, C3) are archived into _subgroups_archive/.
+  subgroups:
+    ED_C: "C2"
+    SO_E: "E3"
+    MC_B: "B1"
+    TIC_A: "A1"
+    VC_A: "A3"

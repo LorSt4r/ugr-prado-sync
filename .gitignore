@@ -1,0 +1,60 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Sensitive data, credentials, sessions, and state
+.env
+*.cookie
+*.cookies
+.prado_session_cookies.json
+.mail_cache.json
+*.db
+*.sqlite
+*.sqlite3
+session.json
+state.json
+state.db
+credentials.vault
+
+# Local configuration overrides (example is committed)
+config.yaml
+!config.example.yaml
+USER.md
+!USER.md.example
+.pytest_cache/
+
+# Teamwork agent metadata (MUST be ignored)
+.agents/teamwork/
+
+# But KEEP the agent skill tracked:
+!.agents/skills/
+!.agents/skills/prado-os/
+!.agents/skills/prado-os/SKILL.md
+
+# Operating System files
+.DS_Store
+Thumbs.db
+Desktop.ini
