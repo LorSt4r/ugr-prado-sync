@@ -126,7 +126,16 @@ def write_secure_file(path: Path, content: str | bytes, mode: int = 0o600) -> No
             except OSError:
                 pass
 
-        os.replace(tmp_path, path)
+        import time
+        for attempt in range(30):
+            try:
+                os.replace(tmp_path, path)
+                break
+            except PermissionError:
+                if os.name == "nt" and attempt < 29:
+                    time.sleep(0.01 * (attempt + 1))
+                else:
+                    raise
     finally:
         if tmp_path.exists():
             try:
@@ -218,16 +227,24 @@ def load_config(path: Optional[Path] = None) -> PradoConfig:
     if not config_file.exists():
         return PradoConfig()
 
-    try:
-        with open(config_file, "r", encoding="utf-8") as f:
-            content = yaml.safe_load(f)
-        if not content:
-            return PradoConfig()
-        return PradoConfig.from_dict(content)
-    except yaml.YAMLError as e:
-        raise ConfigError(f"Malformed YAML in {config_file}: {e}") from e
-    except Exception as e:
-        raise ConfigError(f"Failed to load configuration from {config_file}: {e}") from e
+    import time
+    for attempt in range(20):
+        try:
+            with open(config_file, "r", encoding="utf-8") as f:
+                content = yaml.safe_load(f)
+            if not content:
+                return PradoConfig()
+            return PradoConfig.from_dict(content)
+        except PermissionError as e:
+            if os.name == "nt" and attempt < 19:
+                time.sleep(0.01 * (attempt + 1))
+                continue
+            raise ConfigError(f"Failed to load configuration from {config_file}: {e}") from e
+        except yaml.YAMLError as e:
+            raise ConfigError(f"Malformed YAML in {config_file}: {e}") from e
+        except Exception as e:
+            raise ConfigError(f"Failed to load configuration from {config_file}: {e}") from e
+    return PradoConfig()
 
 
 def save_config(config: PradoConfig, path: Optional[Path] = None) -> None:

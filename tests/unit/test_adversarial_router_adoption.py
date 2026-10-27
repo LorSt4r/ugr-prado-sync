@@ -202,7 +202,7 @@ class TestMidSemesterAdoptionAdversarial:
         assert count == 1
         assert deep_hash in scanner.hash_index
 
-        rel_path = str(deep_file.relative_to(courses_dir))
+        rel_path = deep_file.relative_to(courses_dir).as_posix()
         adopted = scanner.match_and_adopt(rel_path, deep_hash, course_id=123)
         assert adopted is not None
         assert adopted.rel_path == rel_path
