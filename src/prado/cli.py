@@ -664,6 +664,18 @@ def _handle_sync(args: argparse.Namespace, json_mode: bool) -> int:
         export_changelog(courses_root=cfg.courses_root, summary=summary)
         export_calendar(courses_root=cfg.courses_root, deadlines=summary.deadlines)
 
+    gcal_info = None
+    if getattr(args, "gcalendar", False):
+        try:
+            from prado.exporters.gcalendar import GoogleCalendarSync
+            gcal = GoogleCalendarSync(
+                token_file=getattr(args, "gcalendar_token", None),
+                calendar_id=getattr(args, "calendar_id", "auto")
+            )
+            gcal_info = gcal.sync_deadlines(summary.deadlines, dry_run=dry_run)
+        except Exception as e:
+            gcal_info = {"status": "error", "error": str(e)}
+
     star_info = None
     if not dry_run:
         star_info = maybe_prompt_star_after_sync(
@@ -683,6 +695,7 @@ def _handle_sync(args: argparse.Namespace, json_mode: bool) -> int:
         "forum_announcements": len(summary.forum_announcements),
         "planned_actions": planned_actions if dry_run else [],
         "star": star_info,
+        "gcalendar": gcal_info,
     }
 
     if json_mode:
@@ -701,6 +714,41 @@ def _handle_sync(args: argparse.Namespace, json_mode: bool) -> int:
                 f"Conflicts Protected: {len(summary.conflict_files)} | "
                 f"Deadlines: {len(summary.deadlines)}"
             )
+            if gcal_info:
+                if gcal_info.get("status") == "success":
+                    print(f"  Google Calendar: {gcal_info.get('created', 0)} created, {gcal_info.get('skipped', 0)} existing ({gcal_info.get('calendar_id')})")
+                else:
+                    print(f"  Google Calendar Error: {gcal_info.get('error')}")
+    return 0
+
+
+def _handle_gcalendar(args: argparse.Namespace, json_mode: bool) -> int:
+    cfg = load_config()
+    from prado.exporters.gcalendar import GoogleCalendarSync, load_deadlines_from_ics
+    ics_file = cfg.courses_root / "deadlines.ics"
+    deadlines = load_deadlines_from_ics(ics_file)
+
+    gcal = GoogleCalendarSync(
+        token_file=args.token_file,
+        calendar_id=args.calendar_id
+    )
+    res = gcal.sync_deadlines(deadlines, dry_run=args.dry_run)
+
+    if json_mode:
+        _emit_json(res)
+        return 0 if res.get("status") == "success" else 1
+
+    if res.get("status") == "error":
+        print(f"❌ Error al sincronizar con Google Calendar: {res.get('error')}", file=sys.stderr)
+        return 1
+
+    print("=" * 60)
+    print("🗓️  PradoOS — Sincronización Directa Google Calendar")
+    print(f"   Calendario: {res.get('calendar_id')}")
+    print(f"   Eventos creados: {res.get('created', 0)}")
+    print(f"   Eventos ya existentes: {res.get('skipped', 0)}")
+    print(f"   Total entregas/exámenes: {res.get('total_deadlines', 0)}")
+    print("=" * 60)
     return 0
 
 
@@ -863,6 +911,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_sync.add_argument("--force", action="store_true", help="Re-download unmodified files.")
     p_sync.add_argument("--adopt", action="store_true", help="Pre-scan and adopt existing local files by SHA-256.")
     p_sync.add_argument("--preset", choices=["smart", "mirror"], help="Override routing preset for this run.")
+    p_sync.add_argument("--gcalendar", action="store_true", help="Sync upcoming deadlines directly to Google Calendar via REST API.")
+    p_sync.add_argument("--gcalendar-token", help="Path to Google Calendar OAuth token.json.")
+    p_sync.add_argument("--calendar-id", default="auto", help="Google Calendar ID (default: 'auto' or 'primary').")
     p_sync.add_argument("--no-interactive", action="store_true", help="Run non-interactively (daemon/agent mode).")
     p_sync.add_argument("--json", action="store_true", default=False, help="Output structured JSON.")
 
@@ -888,6 +939,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_star.add_argument("--no-browser", action="store_true", help="Do not open browser if `gh` CLI is unavailable.")
     p_star.add_argument("--json", action="store_true", default=False, help="Output structured JSON.")
 
+    # 9. gcalendar
+    p_gcal = subparsers.add_parser("gcalendar", help="Sync deadlines from deadlines.ics directly to Google Calendar via REST API.")
+    p_gcal.add_argument("--calendar-id", default="auto", help="Google Calendar ID (default: 'auto' or 'primary').")
+    p_gcal.add_argument("--token-file", help="Path to Google Calendar OAuth token.json.")
+    p_gcal.add_argument("--dry-run", action="store_true", help="Preview events without writing to Google Calendar.")
+    p_gcal.add_argument("--json", action="store_true", default=False, help="Output structured JSON.")
+
     return parser
 
 
@@ -901,11 +959,12 @@ def _run_interactive_menu() -> int:
     print("║  [3] 📚 Discover & List Enrolled Courses                     ║")
     print("║  [4] 🩺 Run System Health Check (Doctor)                     ║")
     print("║  [5] ⏱️  Enable Automatic Background Sync (Every 4h)          ║")
-    print("║  [6] ⭐ Star ugr-prado-sync on GitHub                        ║")
+    print("║  [6] 🗓️  Sync Deadlines to Google Calendar                    ║")
+    print("║  [7] ⭐ Star ugr-prado-sync on GitHub                        ║")
     print("║  [0] 🚪 Exit                                                 ║")
     print("╚══════════════════════════════════════════════════════════════╝")
     try:
-        choice = input("\nSelect an option [1-6, 0 to exit]: ").strip()
+        choice = input("\nSelect an option [1-7, 0 to exit]: ").strip()
     except (EOFError, KeyboardInterrupt):
         print()
         return 0
@@ -916,7 +975,8 @@ def _run_interactive_menu() -> int:
         "3": ["discover"],
         "4": ["doctor", "--fix"],
         "5": ["daemon", "install"],
-        "6": ["star"],
+        "6": ["gcalendar"],
+        "7": ["star"],
     }
     if choice in menu_map:
         return main(menu_map[choice])
@@ -956,6 +1016,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "doctor": _handle_doctor,
         "daemon": _handle_daemon,
         "star": _handle_star,
+        "gcalendar": _handle_gcalendar,
     }
 
     handler = dispatch.get(args.command)

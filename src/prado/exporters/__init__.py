@@ -16,6 +16,7 @@ from prado.exporters.calendar import (
     generate_deadlines_ics,
     generate_event_uid,
 )
+from prado.exporters.gcalendar import GoogleCalendarSync
 from prado.exporters.changelog import (
     ChangelogExporter,
     escape_markdown_filename,
