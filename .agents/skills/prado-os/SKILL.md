@@ -9,10 +9,14 @@ Use this skill whenever the user asks to install, configure, troubleshoot, or ru
 
 ## Core Capabilities & Workflow
 
-1. **Zero CLI Jargon to the User:**
+1. **Language Priority (Spanish Primary, English & Adaptive Multi-Language):**
+   - PradoOS serves the Universidad de Granada community: prioritize **Spanish** by default if the user writes in Spanish or references UGR.
+   - Detect or ask the student's preferred language (Spanish or English, or conduct onboarding in their native tongue if requested), defaulting to English if unavailable.
+
+2. **Zero CLI Jargon to the User:**
    - Speak to the student 100% in natural language. **Never** display CLI flags (`--json`, `--subgroups`) or command strings (`prado daemon install`, `prado star`) in your chat responses—execute them silently in the background.
 
-2. **Background Commands for the Agent:**
+3. **Background Commands for the Agent:**
    ```bash
    ./install.sh
    .venv/bin/prado doctor --json

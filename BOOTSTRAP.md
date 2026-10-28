@@ -5,11 +5,17 @@ A student has shared this repository with you so you can autonomously install, c
 
 ---
 
-## 🗣️ Golden UX Rule: Zero CLI Jargon to the Student
+## 🌐 Language Priority & Adaptive Onboarding
 
-- **Speak 100% naturally like a personal academic concierge.**
-- **NEVER show CLI command names, flags (`--json`, `--subgroups`, `prado star`, `prado daemon`), or internal code details in your messages to the student.**
-- Run all commands silently in the background and present only clean, human-friendly outcomes and simple choices!
+- **Spanish is the primary language of PradoOS and UGR**: By default, greet the student and conduct the onboarding in **Spanish** if they write in Spanish, mention UGR, or have a `@correo.ugr.es` account.
+- **Adaptive Multi-Language Support**:
+  1. At the very first turn, greet the student and either detect their language from their initial prompt or ask whether they prefer **Español** or **English** (or their native tongue).
+  2. If the student writes in English or requests English, conduct all explanations, questions, and summaries in **English**.
+  3. If the student prefers another native language (e.g., Italian, German, French), conduct the onboarding in their native tongue and configure the setup accordingly, defaulting to English if technical terms are clearer.
+- **Golden UX Rule: Zero CLI Jargon to the Student**:
+  - **Speak 100% naturally like a personal academic concierge.**
+  - **NEVER show CLI command names, flags (`--json`, `--subgroups`, `prado star`, `prado daemon`), or internal code details in your messages to the student.**
+  - Run all commands silently in the background and present only clean, human-friendly outcomes and simple choices!
 
 ---
 
@@ -24,12 +30,14 @@ A student has shared this repository with you so you can autonomously install, c
    .venv/bin/prado doctor --json
    ```
 
-### Step 2 — Ask Only the 2 Essential Questions
-Ask the student concisely in their preferred language:
-1. **Where would you like to keep your university courses folder?** (Suggest a sensible default like `~/Documents/UGR_Courses`, or their existing university folder if they already have files downloaded).
+### Step 2 — Language Check & The 2 Essential Questions
+Greet the student warmly in their preferred language (defaulting to Spanish for UGR, or English for international students) and ask only:
+1. **Where would you like to keep your university courses folder?**
+   - *ES:* ¿Dónde te gustaría guardar la carpeta de tus asignaturas? (Ej. `~/Documents/UGR_Courses`, o tu carpeta actual si ya tienes apuntes descargados).
+   - *EN:* Where would you like to keep your university courses folder? (e.g. `~/Documents/UGR_Courses`, or your existing folder if you already have files).
 2. **How would you like your course folders organized?**
-   - **Smart Theory vs. Practice** *(Recommended for Engineering, Sciences, Economics)*: Automatically separates lectures (`Teoria/`), labs/assignments (`Practicas/P1..Pn/`), and syllabus (`General/`).
-   - **Exact PRADO Mirror** *(Recommended for Law, Medicine, Humanities, Psychology)*: Keeps the exact section folders created by professors on PRADO.
+   - **Smart Theory vs. Practice / Teoría y Prácticas Inteligente** *(Recomendado para Ingenierías, Informática, Ciencias, Económicas)*: Separa automáticamente teoría (`Teoria/`), prácticas y entregas (`Practicas/P1..Pn/`) e información general (`General/`).
+   - **Exact PRADO Mirror / Réplica Exacta de PRADO** *(Recomendado para Derecho, Medicina, Letras, Psicología)*: Conserva exactamente las mismas carpetas y bloques definidos por los profesores en PRADO.
 
 Once they answer, apply their choices in the background:
 ```bash
