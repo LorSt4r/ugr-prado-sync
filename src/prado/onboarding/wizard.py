@@ -149,10 +149,10 @@ class OnboardingWizard:
             entered_root = self.input_fn(f"4. Courses Destination Folder [{default_root}]: ").strip()
             resolved_root = Path(entered_root or default_root).expanduser()
 
-            default_preset = preset or existing.sync.preset or "smart"
+            default_preset = preset or existing.sync.preset or "mirror"
             entered_preset = (
                 self.input_fn(
-                    "5. Folder Organization Preset [smart = Teoria/Practicas, mirror = Exact PRADO Sections] "
+                    "5. Folder Organization Preset [mirror = Réplica Exacta de PRADO (Recomendado Terminal), smart = Teoria/Practicas (Modo Agente IA)] "
                     f"[{default_preset}]: "
                 )
                 .strip()

@@ -35,13 +35,15 @@ Greet the student warmly in their preferred language (defaulting to Spanish for 
 1. **Where would you like to keep your university courses folder?**
    - *ES:* ¿Dónde te gustaría guardar la carpeta de tus asignaturas? (Ej. `~/Documents/UGR_Courses`, o tu carpeta actual si ya tienes apuntes descargados).
    - *EN:* Where would you like to keep your university courses folder? (e.g. `~/Documents/UGR_Courses`, or your existing folder if you already have files).
-2. **How would you like your course folders organized?**
-   - **Smart Theory vs. Practice / Teoría y Prácticas Inteligente** *(Recomendado para Ingenierías, Informática, Ciencias, Económicas)*: Separa automáticamente teoría (`Teoria/`), prácticas y entregas (`Practicas/P1..Pn/`) e información general (`General/`).
-   - **Exact PRADO Mirror / Réplica Exacta de PRADO** *(Recomendado para Derecho, Medicina, Letras, Psicología)*: Conserva exactamente las mismas carpetas y bloques definidos por los profesores en PRADO.
+2. **How often would you like me to check PRADO for new materials or deadlines?**
+   - *ES:* ¿Cada cuánto tiempo deseas que revise automáticamente nuevos materiales o entregas en PRADO? *(Recomendado: 3 veces al día — ej. 08:30, 14:00 y 20:00 — o cada 4 horas)*.
+   - *EN:* How often should I check PRADO for new slides, lab tasks, or deadlines? *(Recommended: 3 times a day — e.g. 08:30, 14:00, 20:00 — or every 4 hours)*.
+
+*(Note for AI Agents: In this agent-mediated setup, apply the **Smart Theory vs Practice** (`smart`) preset by default (`--preset smart`), because as an AI agent you can intelligently curate files into `Teoria/` and `Practicas/P1..Pn/` while checking syllabus and archiving inactive subgroups. Only use `mirror` if the student specifically requests an exact 1:1 replica of PRADO's layout).*
 
 Once they answer, apply their choices in the background:
 ```bash
-.venv/bin/prado onboard --courses-root "<PATH>" --preset <smart|mirror> --no-interactive --no-star --json
+.venv/bin/prado onboard --courses-root "<PATH>" --preset smart --no-interactive --no-star --json
 ```
 
 ### Step 3 — Security Reassurance & Native OS Login
@@ -65,6 +67,31 @@ Once they answer, apply their choices in the background:
    .venv/bin/prado sync --adopt --json
    ```
 2. Show the student a clean table of their synced courses, how many files were organized, and where their `DASHBOARD.md` and `deadlines.ics` calendar file are located.
+
+### Step 5 — Configure Autonomous Agent Automation (Based on Your AI Assistant)
+Based on the student's preferred frequency chosen in Step 2, set up recurring background sync according to your agent environment:
+
+1. **In Google Antigravity:**
+   - Suggest or trigger the `/automation` slash command or `schedule` tool (e.g., cron `0 8,14,20 * * 1-5` or every 4 hours) to run `.venv/bin/prado sync --adopt --json` in background and alert the student in chat only when new materials or deadlines are detected.
+2. **In Claude Code (`claude` CLI):**
+   - Claude Code executes headlessly via `-p` / `--print`.
+   - Configure a recurring task or cron script running:
+     ```bash
+     claude -p "Run .venv/bin/prado sync --adopt --json, review DASHBOARD.md and CHANGELOG.md, and alert me only if there are new materials, urgent forum posts, or deliverables in the next 3 days." --allowedTools "Bash,Read"
+     ```
+3. **In OpenAI Codex / Cursor / Terminal Agents:**
+   - Install the native OS background daemon:
+     ```bash
+     .venv/bin/prado daemon install --interval 14400 --json
+     ```
+     *(Installs macOS `launchd`, Linux `systemd --user`, or Windows `schtasks` running 24/7 even when IDE/terminal is closed)*.
+   - Save a prompt template in `.agents/prompts/daily-check.md` for the agent.
+4. **Direct Google Calendar API Push:**
+   - If the student uses Google Calendar, run:
+     ```bash
+     .venv/bin/prado gcalendar --json
+     ```
+     *(Automatically detects their university calendar and syncs deadlines with tiered popup alarms: 3d/1d/2h for exams, 2d/1d/3h for assignments)*.
 
 ---
 

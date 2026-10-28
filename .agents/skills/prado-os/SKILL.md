@@ -22,15 +22,20 @@ Use this skill whenever the user asks to install, configure, troubleshoot, or ru
    .venv/bin/prado doctor --json
    .venv/bin/prado auth login --gui --json
    .venv/bin/prado discover --json
-   .venv/bin/prado sync --dry-run --json
    .venv/bin/prado sync --adopt --json
+   .venv/bin/prado gcalendar --json
+   .venv/bin/prado daemon install --interval 14400 --json
    ```
 
-3. **Security Audit Reassurance & Zero-Terminal GUI Login (`prado auth login --gui --json`):**
+4. **Security Audit Reassurance & Zero-Terminal GUI Login (`prado auth login --gui --json`):**
    - Before triggering login, inspect `src/prado/auth/credentials.py` and `src/prado/auth/saml.py` and reassure the student that you verified the code locally: their password is stored exclusively in their native OS Keychain and sent only to `idp.ugr.es` (they can also store it directly via OS tools like macOS `/usr/bin/security`, Windows `cmdkey`, or Linux `secret-tool`).
    - Run `.venv/bin/prado auth login --gui --json` directly to open the native OS login dialog on their screen.
 
-4. **2-Phase Progressive Disclosure Onboarding:**
-   - **Phase 1 (<60s):** Ask only for destination folder and organization style (Smart Theory/Practice vs Exact PRADO Mirror), run login, and sync (`prado sync --adopt --json`).
+5. **2-Phase Progressive Disclosure Onboarding:**
+   - **Phase 1 (<60s):** Ask only for destination folder (`courses_root`) and sync frequency (e.g. 3x/day or every 4 hours). Apply the **Smart Theory vs Practice** (`smart`) preset automatically for agentic setups.
+   - **Phase 2 (Automation by Agent Environment):**
+     - **Google Antigravity:** Suggest `/automation` or schedule tool (cron `0 8,14,20 * * 1-5`).
+     - **Claude Code:** Setup headless cron runner (`claude -p "..." --allowedTools "Bash,Read"`).
+     - **OpenAI Codex / Terminal:** Install OS daemon via `prado daemon install --interval 14400 --json`.
+     - **Google Calendar:** Run `prado gcalendar --json` to push deadlines with tiered popup alarms.
    - **GitHub Star Prompt:** After the first successful sync, politely ask once in natural language if they would like you to star `LorSt4r/ugr-prado-sync` on GitHub (`prado star --json`).
-   - **Phase 2 (Optional Power-Ups):** Offer lab subgroup filtering, automatic background sync every 4 hours, and IMAP 2FA renewal in plain language.
