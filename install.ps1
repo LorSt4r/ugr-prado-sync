@@ -163,8 +163,8 @@ function Install-PradoOS {
             }
         }
 
-        if (-not (Test-Path (Join-Path $InstallDir "pyproject.toml"))) {
-            Write-Host "==> Downloading PradoOS source archive from GitHub..." -ForegroundColor Cyan
+        if (-not (Test-Path (Join-Path $InstallDir ".git"))) {
+            Write-Host "==> Downloading latest PradoOS source archive from GitHub..." -ForegroundColor Cyan
             $ZipPath = Join-Path $env:TEMP "ugr-prado-sync-main.zip"
             $ExtractPath = Join-Path $env:TEMP "ugr-prado-sync-extract"
 

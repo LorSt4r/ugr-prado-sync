@@ -84,14 +84,22 @@ def _emit_json(payload: Dict[str, Any]) -> None:
 
 def normalize_ugr_username(username: Optional[str], moodle_url: str = "") -> Optional[str]:
     """
-    Normalizes UGR institutional usernames: if a student enters only the local part
-    (e.g. 'lorenzovasile') for a '*.ugr.es' Moodle instance, automatically appends '@correo.ugr.es'.
+    Normalizes UGR institutional usernames:
+    - If a student enters only the local part (e.g. 'lorenzovasile') for a '*.ugr.es' Moodle instance,
+      automatically appends '@correo.ugr.es'.
+    - If a student enters their Google Workspace address ('e.user@go.ugr.es' or 'user@go.ugr.es'),
+      converts it to 'user@correo.ugr.es' since UGR IdP SSO requires '@correo.ugr.es'.
     """
     if not username:
         return username
     clean = username.strip()
     if not clean:
         return None
+    if clean.lower().endswith("@go.ugr.es"):
+        local = clean.split("@", 1)[0]
+        if local.lower().startswith("e.") and len(local) > 2:
+            local = local[2:]
+        return f"{local}@correo.ugr.es"
     if "@" not in clean and ".ugr.es" in (moodle_url or "").lower():
         return f"{clean}@correo.ugr.es"
     return clean
@@ -120,6 +128,7 @@ def _obtain_authenticated_session(
         ) from e
 
     username, password = creds
+    normalized_user = normalize_ugr_username(username, cfg.moodle_url) or username
     mfa_resolver = MfaResolver(
         mfa_config=cfg.mfa,
         interactive=interactive and not json_mode,
@@ -132,7 +141,30 @@ def _obtain_authenticated_session(
         mfa_resolver=mfa_resolver,
         credential_store=cred_store,
     )
-    return driver.login(username=username, password=password)
+    try:
+        return driver.login(username=normalized_user, password=password)
+    except InvalidCredentialsError as exc:
+        cred_store.delete_sso_credentials(username)
+        is_real_tty = (
+            interactive
+            and not json_mode
+            and hasattr(sys.stdin, "isatty")
+            and sys.stdin.isatty()
+            and not os.environ.get("PYTEST_CURRENT_TEST")
+        )
+        if not is_real_tty:
+            raise
+        import getpass
+        sys.stderr.write(f"\n✗ {exc}\n")
+        sys.stderr.write("  (Recuerda usar tu correo '@correo.ugr.es' y la contraseña de Acceso Identificado / PRADO).\n\n")
+        new_user = input(f"Institutional Email [{normalized_user}]: ").strip() or normalized_user
+        new_user = normalize_ugr_username(new_user, cfg.moodle_url) or new_user
+        new_pass = getpass.getpass("Institutional Password: ")
+        cred_store.set_sso_credentials(new_user, new_pass)
+        if cfg.username != new_user:
+            cfg.username = new_user
+            save_config(cfg)
+        return driver.login(username=new_user, password=new_pass)
 
 
 def _handle_onboard(args: argparse.Namespace, json_mode: bool) -> int:
@@ -171,6 +203,29 @@ def _handle_onboard(args: argparse.Namespace, json_mode: bool) -> int:
         print(f"\n✓ Onboarding complete! Configuration saved to {result['config_file']}")
         print(f"  Courses root : {result['courses_root']}")
         print(f"  Preset       : {result['preset']}")
+        is_real_tty = (
+            interactive
+            and hasattr(sys.stdin, "isatty")
+            and sys.stdin.isatty()
+            and not os.environ.get("PYTEST_CURRENT_TEST")
+        )
+        if is_real_tty:
+            print("\n==> Connecting to UGR SSO to verify credentials and run initial course sync...")
+            sync_ns = argparse.Namespace(
+                course=None,
+                preset=None,
+                dry_run=False,
+                adopt=True,
+                force=False,
+                ical=None,
+                gcalendar=False,
+                url=args.url,
+                semester=args.semester,
+                mfa_code=None,
+                no_interactive=False,
+                json=False,
+            )
+            return _handle_sync(sync_ns, json_mode=False)
     return 0
 
 

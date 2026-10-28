@@ -139,6 +139,16 @@ class OnboardingWizard:
                 else "2. Institutional Email / Username (e.g. student@correo.ugr.es): "
             )
             entered_user = self.input_fn(user_prompt).strip() or default_user
+            if entered_user:
+                if entered_user.lower().endswith("@go.ugr.es"):
+                    local_part = entered_user.split("@", 1)[0]
+                    if local_part.lower().startswith("e.") and len(local_part) > 2:
+                        local_part = local_part[2:]
+                    entered_user = f"{local_part}@correo.ugr.es"
+                    self.print_fn(f"   (Note: UGR SSO requires @correo.ugr.es -> using '{entered_user}')")
+                elif "@" not in entered_user and ".ugr.es" in resolved_url.lower():
+                    entered_user = f"{entered_user}@correo.ugr.es"
+                    self.print_fn(f"   (Normalized username to '{entered_user}')")
             username = entered_user
 
             if password is None:

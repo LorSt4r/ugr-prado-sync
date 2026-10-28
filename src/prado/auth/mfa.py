@@ -218,6 +218,8 @@ class MfaResolver:
                             return code
 
                 client.logout()
+            except (imaplib.IMAP4.error, KeyboardInterrupt):
+                break
             except Exception:
                 pass
 
@@ -288,7 +290,8 @@ class MfaResolver:
         """
         Prompts user on the interactive terminal TTY for the 6-digit code.
         """
-        sys.stderr.write("\n[PradoOS MFA] Enter the 6-digit verification code sent to your email: ")
+        sys.stderr.write("\n✓ UGR credentials verified! PRADO has sent a 6-digit code to your institutional email (@correo.ugr.es).\n")
+        sys.stderr.write("[PradoOS MFA] Enter the 6-digit verification code sent to your email: ")
         sys.stderr.flush()
         code = sys.stdin.readline().strip()
         if not re.match(r"^[0-9]{6}$", code):
