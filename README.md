@@ -13,25 +13,16 @@
 
 ---
 
-## 👥 Historia, Autoría y el Stack de Ingeniería Humano + IA
+## 👥 Autoría y AI Disclosure
 
 ### 🇮🇹 De una Necesidad Real en Granada a un Proyecto Open-Source
-**PradoOS** fue ideado y dirigido por **Lorenzo Vasile**, estudiante siciliano de Ingeniería Informática de la *Università degli Studi di Palermo (UniPa)* durante su estancia **Erasmus+** en la *Universidad de Granada (UGR, ETSIIT)* (Curso 2026/2027).  
-Al compaginar cinco asignaturas de cursos y departamentos distintos (Estructura de Datos, Modelos de Computación, Visión por Computador, Teoría de la Información y Sistemas Operativos) — y con el objetivo no negociable de alcanzar la máxima excelencia académica (10.0 con Matrícula de Honor / 30 e Lode) —, surgió una necesidad imperiosa: **eliminar por completo la pérdida de tiempo manual en descargar PDFs, comprobar foros, organizar carpetas y vigilar fechas de entrega**.
+**PradoOS** fue desarrollado por **Lorenzo Vasile**, estudiante de Ingeniería Informática de la *Università degli Studi di Palermo (UniPa)* durante su estancia **Erasmus+** en la *Universidad de Granada (UGR, ETSIIT)* (Curso 2026/2027).  
+Al compaginar múltiples asignaturas de distintos departamentos (Estructura de Datos, Modelos de Computación, Visión por Computador, Teoría de la Información y Sistemas Operativos), surgió la necesidad de optimizar el tiempo de estudio y **eliminar por completo las pérdidas de tiempo manuales**: descargar PDFs uno a uno, revisar foros repetitivamente, reorganizar carpetas y vigilar fechas de entrega dispersas.
 
-### ⚡ El Stack de Pair Programming: Lorenzo Vasile × Google Antigravity
-Para construir una solución con calidad de producción, arquitectura multi-OS y tests exhaustivos, Lorenzo trabajó en estrecha colaboración con **Google Antigravity**, la plataforma avanzada de desarrollo agentico de Google DeepMind:
-
-- 👤 **Lorenzo Vasile (Arquitecto de Requisitos & Experto de Dominio):**
-  - Diseñó la arquitectura modular a partir de las necesidades reales del estudiante en las aulas de la ETSIIT.
-  - Definió los invariantes no negociables: **cero almacenamiento de contraseñas en texto plano**, aislamiento estricto de credenciales en el Llavero nativo del sistema operativo, regla **Zero CLI Jargon** para el usuario y protección total contra pérdida de código.
-  - Validó casos límite reales en asignaturas de PRADO y probó en vivo el sistema tanto en **macOS (Apple Silicon)** como en **Arch Linux Desktop (`omarchy`)** a través de túneles SSH seguros.
-
-- 🤖 **Google Antigravity AI Engine (Motor de Implementación y Verificación):**
-  - **Gemini 4 Argon (Medium / High Reasoning):** Actuó como orquestador y verificador principal; encargado de la arquitectura del protocolo SAML SSO headless, el diseño de la máquina de estados de autenticación MFA en 3 niveles, la matriz matemática de colisiones a 4 cuadrantes y la auditoría de concurrencia y permisos NTFS.
-  - **Gemini 3.8 Flash (High Speed & Precision):** Encargado de la implementación ágil de código, generación y ejecución de la suite de **707 tests automáticos (unitarios, de integración, adversariales y E2E)**, integración con REST APIs de Google Calendar y configuración de la matriz de integración continua (CI) en GitHub Actions para Linux, macOS y Windows.
-
-El resultado es un motor robusto, determinista y abierto que demuestra el potencial real del trabajo en pareja entre un estudiante de ingeniería y modelos de lenguaje de vanguardia.
+### 🤖 AI Disclosure & Proceso de Desarrollo
+Este proyecto fue diseñado e implementado mediante pair programming asistido por inteligencia artificial con **Google Antigravity**:
+- **Lorenzo Vasile**: concepción del proyecto, definición de requisitos funcionales y de seguridad (aislamiento de credenciales en el Llavero nativo, flujo SAML/MFA sin contraseñas en texto plano, protección anti-sobrescritura) y validación en entornos reales (**macOS** y **Arch Linux**).
+- **Stack de IA (Google Antigravity)**: se utilizó **Gemini 4 Argon** para el diseño de la arquitectura modular, análisis de seguridad y verificación, y **Gemini 3.8 Flash** para la generación ágil de código, la suite de tests automatizados (707 tests) y los pipelines de CI multiplataforma.
 
 ---
 

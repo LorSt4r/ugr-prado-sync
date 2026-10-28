@@ -106,7 +106,7 @@ Right after the first successful sync:
 
 ## ⚡ Phase 2: Personalización Sartorial de Élite (Concierge Académico Personal)
 
-Una vez completada la primera sincronización de base, **no te detengas aquí**. Como asistente de IA (Antigravity, Claude Code, Cursor, Codex), tu verdadero valor añadido es transformar este entorno en un **Concierge Académico Personal de élite**, tal como el creador de PradoOS diseñó para su propio semestre de Matrícula de Honor en la UGR.
+Una vez completada la primera sincronización de base, **no te detengas aquí**. Como asistente de IA (Antigravity, Claude Code, Cursor, Codex), tu verdadero valor añadido es transformar este entorno en un **Concierge Académico Personal de élite**, tal como el creador de PradoOS diseñó para optimizar al máximo su tiempo y rendimiento en la UGR.
 
 Presenta al estudiante de forma cercana y entusiasta estas personalizaciones avanzadas, ofreciéndote a configurarlas paso a paso:
 
@@ -117,7 +117,7 @@ Presenta al estudiante de forma cercana y entusiasta estas personalizaciones ava
    - En facultades como la ETSIIT, muchas asignaturas tienen dos portales en PRADO: uno general (*COMÚN*) para transparencias de teoría y otro específico de prácticas (*Grupo E, C, B*).
    - Pregunta si desea fusionarlos en una única carpeta local unificada (ej. unificar *Sistemas Operativos COMÚN* y *Sistemas Operativos Grupo E* en `SO_E/`), manteniendo apuntes y guiones juntos sin carpetas redundantes.
 3. **📊 Ponderación de Evaluaciones y Metas Académicas:**
-   - Pregunta los porcentajes de evaluación de sus asignaturas (ej. 60% examen de teoría, 35% proyecto final en equipo, 15% problemas) y su calificación objetivo (ej. Sobresaliente / Matrícula de Honor).
+   - Pregunta los porcentajes de evaluación de sus asignaturas (ej. 60% examen de teoría, 35% proyecto final en equipo, 15% problemas) y sus metas académicas.
    - Esto te permitirá priorizar las cuentas regresivas y enfocar las sesiones de estudio donde el impacto matemático sobre la nota final sea máximo.
 4. **🧪 Filtro Quirúrgico de Subgrupos de Laboratorio:**
    - Pregunta a qué subgrupos pertenece (ej. `C2`, `E3`, `A1`) para archivar limpiamente los enunciados de otros subgrupos en `_subgroups_archive/` y mantener la carpeta principal impecable. *(Se aplica en segundo plano con `.venv/bin/prado onboard --subgroups "ED_C=C2,..." --no-interactive --no-star --json`)*.

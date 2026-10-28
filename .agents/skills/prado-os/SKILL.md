@@ -42,6 +42,6 @@ Use this skill whenever the user asks to install, configure, troubleshoot, or ru
      - **Sartorial Personalization (`USER.md`):**
        - Ask the student for their weekly class timetable to schedule intelligent deep work study blocks between lectures.
        - Ask if they want to merge theoretical and lab portals (e.g. `SO_COMUN` + `SO_E` -> `SO_E/`).
-       - Ask for evaluation weights (theory exam, lab project) and target grades (Sobresaliente / Matrícula de Honor) to prioritize dashboard countdowns.
+       - Ask for evaluation weights (theory exam, lab project) and academic goals to prioritize dashboard countdowns.
        - Save all custom preferences into `.gitignore`-protected `USER.md` using `USER.md.example` as a model.
    - **GitHub Star Prompt:** After the first successful sync, politely ask once in natural language if they would like you to star `LorSt4r/ugr-prado-sync` on GitHub (`prado star --json`).
