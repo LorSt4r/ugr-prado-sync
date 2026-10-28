@@ -56,6 +56,8 @@ Instala y configura https://github.com/LorSt4r/ugr-prado-sync siguiendo BOOTSTRA
 
 #### Opción B: Instalación Tradicional por Terminal (100% Determinista, sin IA)
 
+> 💡 **Cero configuración previa:** No necesitas tener Python ni Git instalados previamente. El instalador detecta tu entorno y configura automáticamente un runtime aislado si no tienes Python >= 3.10.
+
 **macOS y Linux Desktop:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/LorSt4r/ugr-prado-sync/main/install.sh | bash
@@ -164,6 +166,8 @@ Install and configure https://github.com/LorSt4r/ugr-prado-sync for me following
 ```
 
 #### Option B: Standalone Terminal Installation
+
+> 💡 **Zero prerequisites needed:** You do not need Python or Git pre-installed. The installer automatically detects your environment and sets up an isolated runtime if Python >= 3.10 is missing.
 
 ```bash
 # macOS & Linux Desktop:
