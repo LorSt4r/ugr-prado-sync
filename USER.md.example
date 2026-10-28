@@ -1,15 +1,89 @@
-# 👤 USER.md — Local Student Profile Template
-# Copy this file to `USER.md` (which is git-ignored) so your AI assistant remembers your academic preferences.
+# 👤 USER.md — Perfil Académico y Personalización Sartorial del Estudiante
+# Este archivo está ignorado en Git (.gitignore) para que tus datos personales y horarios nunca se suban a la nube.
+# Tu asistente de IA (Antigravity, Claude Code, Cursor, Codex) lo utiliza para actuar como tu Concierge Académico Personal.
 
-- **Student Name:** Example Student
-- **University / Faculty:** Universidad de Granada (UGR) — ETSIIT / Derecho / Medicina / Ciencias / Letras
-- **Academic Profile:** Undergraduate (`pradogrado`) / Master (`pradoposgrado`) / Erasmus+ Mobility
-- **Preferred Language:** Español / English / Italiano
-- **Courses Root Directory:** `~/Documents/UGR_Courses`
-- **Folder Routing Preset:** `smart` (`Teoria` vs `Practicas`) or `mirror` (Exact PRADO section names)
-- **Active Semester:** `1` (Primer Cuatrimestre)
-- **Lab / Seminar Subgroups:**
-  - `ED_C`: `C2`
-  - `SO_E`: `E3`
-- **Preferred Calendar App:** Google Calendar / Apple Calendar / Outlook / Thunderbird (`deadlines.ics`)
-- **AI Summarization Mode:** `deterministic` (100% free, no API keys) / `ollama` / `deepseek` / `gemini` / `openai`
+## 🎓 1. Datos del Estudiante y Movilidad
+- **Nombre del Estudiante:** Lorenzo Vasile
+- **Universidad de Origen:** Università degli Studi di Palermo (UniPa)
+- **Universidad de Destino:** Universidad de Granada (UGR) — Escuela Técnica Superior de Ingenierías Informática y de Telecomunicación (ETSIIT)
+- **Grado / Carrera:** Grado en Ingeniería Informática
+- **Modalidad:** Estudiante Erasmus+ / Grado Oficial
+- **Idioma de Comunicación Preferido:** Español (o Italiano / English)
+- **Objetivo Académico:** Máxima Calificación (10.0 con Matrícula de Honor / 30 e Lode)
+
+---
+
+## 🏛️ 2. Asignaturas Matriculadas y Fusión de Cursos (Aliases)
+> *En muchas facultades de la UGR, una misma asignatura tiene un portal COMÚN y otro de GRUPO en PRADO. Puedes fusionarlos en una única carpeta local:*
+
+- **ED_C:** ESTRUCTURA DE DATOS (Grupo C) ➔ Carpeta local: `ED_C/`
+- **MC_B:** MODELOS DE COMPUTACIÓN (Grupo B) ➔ Carpeta local: `MC_B/`
+- **VC_A:** VISIÓN POR COMPUTADOR (COMÚN) ➔ Carpeta local: `VC_A/`
+- **TIC_A:** TEORÍA DE LA INFORMACIÓN Y LA CODIFICACIÓN (COMÚN) ➔ Carpeta local: `TIC_A/`
+- **SO_E:** SISTEMAS OPERATIVOS (Grupo E) + SISTEMAS OPERATIVOS (COMÚN) ➔ Fusión en carpeta única: `SO_E/`
+
+---
+
+## 🧪 3. Subgrupos de Prácticas y Seminarios Activos
+> *Los materiales de subgrupos que no te correspondan se archivarán automáticamente en `_subgroups_archive/`:*
+- `ED_C`: Subgrupo **C2** (Viernes 11:30–12:30, Aula 3.7)
+- `SO_E`: Subgrupo **E3** (Martes 17:30–19:30, Lab 2.1)
+- `MC_B`: Subgrupo **B1** (Viernes 09:30–10:30, Aula 0.12 Aux)
+- `TIC_A`: Subgrupo **A1** (Martes 09:30–11:30, Aula 2.3)
+- `VC_A`: Subgrupo **A3** (Viernes 12:30–14:30, Aula 3.2)
+
+---
+
+## 📅 4. Horario Semanal de Clases (Para Bloques de Estudio Inteligentes)
+> *Tu asistente de IA utiliza este horario para calcular tus huecos libres reales y programar sesiones de estudio profundo en Google Calendar:*
+
+- **Lunes:** 🟢 Día libre de docencia presencial (Jornada completa de Deep Work y proyectos).
+- **Martes:**
+  - 09:30–11:30 ➔ TIC Prácticas A1 (Aula 2.3)
+  - 17:30–19:30 ➔ SO Laboratorio E3 (Lab 2.1)
+- **Miércoles:**
+  - 09:30–11:30 ➔ TIC Teoría (Aula 1.1)
+- **Jueves:**
+  - 09:30–11:30 ➔ ED Teoría (Aula 0.3)
+  - 11:30–13:30 ➔ MC Teoría (Aula 0.6 FOREM)
+  - 12:30–14:30 ➔ VC Teoría (Aula 0.5)
+- **Viernes:**
+  - 09:30–10:30 ➔ MC Prácticas B1 (Aula 0.12 FOREM)
+  - 10:30–11:30 ➔ ED Teoría (Aula 0.3)
+  - 11:30–12:30 ➔ ED Laboratorio C2 (Aula 3.7)
+  - 12:30–14:30 ➔ VC Laboratorio A3 (Aula 3.2)
+  - 15:30–17:30 ➔ SO Teoría E (Aula 0.7)
+
+---
+
+## 📊 5. Criterios de Evaluación y Ponderación de Notas
+> *Permite a la IA priorizar los recordatorios de estudio según el impacto matemático en la nota final:*
+
+- **Estructura de Datos (`ED`):**
+  - 60% Examen final de teoría
+  - 30% Prácticas C++ (Práctica Final: Sistema de Gestión de Matrículas)
+  - 10% Evaluación continua y participación en clase
+- **Sistemas Operativos (`SO`):**
+  - 50% Examen de teoría tipo test (6 temas)
+  - 50% Laboratorio (30% Módulo 1 en papel + 70% Módulo 2 llamadas al sistema en C)
+- **Modelos de Computación (`MC`):**
+  - 50% Teoría y problemas escritos
+  - 30% Pruebas de prácticas individuales (Autómatas, Gramáticas, Expresiones Regulares)
+  - 10% Práctica de Flex / Lex
+  - 10% Participación activa en pizarra
+- **Teoría de la Información (`TIC`):**
+  - 50% Exámenes tipo test de teoría
+  - 50% Prácticas en Python / Jupyter Notebook
+- **Visión por Computador (`VC`):**
+  - 30% Examen teórico en aula
+  - 35% 3 Prácticas individuales (Filtros, Deep Learning CNN, Segmentación)
+  - 35% Proyecto final en equipo con defensa oral pública (+2.0 puntos bonus MH por tareas extra)
+
+---
+
+## 🗓️ 6. Integración de Calendario
+- **Calendario Objetivo en Google Calendar:** `ETSIIT Granada 2026/2027` (o `primary`)
+- **Política de Notificaciones Automáticas:**
+  - Esami e Prove: 3 giorni prima, 1 giorno prima, 2 ore prima.
+  - Consegne PRADO: 2 giorni prima, 1 giorno prima, 3 ore prima.
+  - Sessioni di Studio Pianificate: 15 minuti prima con link diretto ai file del progetto.

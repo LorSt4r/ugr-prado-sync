@@ -33,9 +33,15 @@ Use this skill whenever the user asks to install, configure, troubleshoot, or ru
 
 5. **2-Phase Progressive Disclosure Onboarding:**
    - **Phase 1 (<60s):** Ask only for destination folder (`courses_root`) and sync frequency (e.g. 3x/day or every 4 hours). Apply the **Smart Theory vs Practice** (`smart`) preset automatically for agentic setups.
-   - **Phase 2 (Automation by Agent Environment):**
-     - **Google Antigravity:** Suggest `/automation` or schedule tool (cron `0 8,14,20 * * 1-5`).
-     - **Claude Code:** Setup headless cron runner (`claude -p "..." --allowedTools "Bash,Read"`).
-     - **OpenAI Codex / Terminal:** Install OS daemon via `prado daemon install --interval 14400 --json`.
-     - **Google Calendar:** Run `prado gcalendar --json` to push deadlines with tiered popup alarms.
+   - **Phase 2 (Sartorial Academic Concierge & Automation):**
+     - **Autonomous Automation:**
+       - **Google Antigravity:** Suggest `/automation` or schedule tool (cron `0 8,14,20 * * 1-5`).
+       - **Claude Code:** Setup headless cron runner (`claude -p "..." --allowedTools "Bash,Read"`).
+       - **OpenAI Codex / Terminal:** Install OS daemon via `prado daemon install --interval 14400 --json`.
+       - **Google Calendar:** Run `prado gcalendar --json` to push deadlines with tiered popup alarms.
+     - **Sartorial Personalization (`USER.md`):**
+       - Ask the student for their weekly class timetable to schedule intelligent deep work study blocks between lectures.
+       - Ask if they want to merge theoretical and lab portals (e.g. `SO_COMUN` + `SO_E` -> `SO_E/`).
+       - Ask for evaluation weights (theory exam, lab project) and target grades (Sobresaliente / Matrícula de Honor) to prioritize dashboard countdowns.
+       - Save all custom preferences into `.gitignore`-protected `USER.md` using `USER.md.example` as a model.
    - **GitHub Star Prompt:** After the first successful sync, politely ask once in natural language if they would like you to star `LorSt4r/ugr-prado-sync` on GitHub (`prado star --json`).

@@ -104,9 +104,22 @@ Right after the first successful sync:
 
 ---
 
-## ⚡ Phase 2: Optional Power-Ups (Offer Simply in Plain Language)
+## ⚡ Phase 2: Personalización Sartorial de Élite (Concierge Académico Personal)
 
-After the first sync, briefly ask if they'd like you to set up any of these optional conveniences (again, **never show flag or command names** to the student—just ask naturally and run the commands yourself!):
-1. **Filter by Lab Subgroup:** Ask if they belong to specific lab groups (e.g. `C2`, `E3`, `A1`) so files from other groups are tucked away into an archive folder. *(Behind the scenes: `.venv/bin/prado onboard --subgroups "ED_C=C2,..." --no-interactive --no-star --json`)*.
-2. **Automatic Background Sync:** Ask if they want their courses to sync automatically in the background every 4 hours. *(Behind the scenes: `.venv/bin/prado daemon install --json`)*.
-3. **Automatic 2FA Renewal via Email:** Ask if they want automatic 2FA renewal when the 30-day session expires. *(Behind the scenes: `--imap-enabled --imap-host imap.ugr.es`)*.
+Una vez completada la primera sincronización de base, **no te detengas aquí**. Como asistente de IA (Antigravity, Claude Code, Cursor, Codex), tu verdadero valor añadido es transformar este entorno en un **Concierge Académico Personal de élite**, tal como el creador de PradoOS diseñó para su propio semestre de Matrícula de Honor en la UGR.
+
+Presenta al estudiante de forma cercana y entusiasta estas personalizaciones avanzadas, ofreciéndote a configurarlas paso a paso:
+
+1. **📅 Horario Semanal y Bloques de Estudio Inteligentes (Google Calendar Deep Work):**
+   - Pregunta al estudiante su horario semanal de clases y laboratorios (ej. *"¿Qué días y a qué horas tienes clases presenciales?"*).
+   - Con esos datos, tu agente calcula sus huecos libres reales entre clases (ej. mañanas libres de los lunes o tardes sin docencia) y programa bloques automáticos de estudio diario (*"📚 [ESTUDIO ...]"*) con aviso previo en Google Calendar (`prado gcalendar`).
+2. **🏛️ Fusión y Alias de Cursos Teórico-Prácticos (Course Aliasing):**
+   - En facultades como la ETSIIT, muchas asignaturas tienen dos portales en PRADO: uno general (*COMÚN*) para transparencias de teoría y otro específico de prácticas (*Grupo E, C, B*).
+   - Pregunta si desea fusionarlos en una única carpeta local unificada (ej. unificar *Sistemas Operativos COMÚN* y *Sistemas Operativos Grupo E* en `SO_E/`), manteniendo apuntes y guiones juntos sin carpetas redundantes.
+3. **📊 Ponderación de Evaluaciones y Metas Académicas:**
+   - Pregunta los porcentajes de evaluación de sus asignaturas (ej. 60% examen de teoría, 35% proyecto final en equipo, 15% problemas) y su calificación objetivo (ej. Sobresaliente / Matrícula de Honor).
+   - Esto te permitirá priorizar las cuentas regresivas y enfocar las sesiones de estudio donde el impacto matemático sobre la nota final sea máximo.
+4. **🧪 Filtro Quirúrgico de Subgrupos de Laboratorio:**
+   - Pregunta a qué subgrupos pertenece (ej. `C2`, `E3`, `A1`) para archivar limpiamente los enunciados de otros subgrupos en `_subgroups_archive/` y mantener la carpeta principal impecable. *(Se aplica en segundo plano con `.venv/bin/prado onboard --subgroups "ED_C=C2,..." --no-interactive --no-star --json`)*.
+5. **👤 Creación del Perfil Permanente `USER.md`:**
+   - Guarda todas estas preferencias en un archivo local `USER.md` (tomando como referencia `USER.md.example`). Al estar registrado en `.gitignore`, sus datos y notas jamás se compartirán en Git, pero tú y cualquier sesión futura de IA recordaréis exactamente quién es el estudiante, su horario y sus metas académicas.
